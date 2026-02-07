@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <linearGradient id="moss-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4a7c59"/>
+      <stop offset="100%" style="stop-color:#2d5a3d"/>
+    </linearGradient>
+  </defs>
+  <!-- Outer diamond shape -->
+  <path d="M16 2 L30 16 L16 30 L2 16 Z" fill="url(#moss-gradient)" stroke="#39ff14" stroke-width="1"/>
+  <!-- Inner pixel pattern - representing regeneration -->
+  <rect x="12" y="10" width="4" height="4" fill="#6b9b7a"/>
+  <rect x="16" y="10" width="4" height="4" fill="#4a7c59"/>
+  <rect x="10" y="14" width="4" height="4" fill="#4a7c59"/>
+  <rect x="14" y="14" width="4" height="4" fill="#39ff14"/>
+  <rect x="18" y="14" width="4" height="4" fill="#4a7c59"/>
+  <rect x="12" y="18" width="4" height="4" fill="#4a7c59"/>
+  <rect x="16" y="18" width="4" height="4" fill="#6b9b7a"/>
+</svg>

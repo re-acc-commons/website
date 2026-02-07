@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0d1210"/>
+      <stop offset="100%" style="stop-color:#111916"/>
+    </linearGradient>
+    <linearGradient id="moss-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4a7c59"/>
+      <stop offset="100%" style="stop-color:#2d5a3d"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg-gradient)"/>
+
+  <!-- Pixel grid pattern -->
+  <g opacity="0.3">
+    <!-- Scattered pixel clusters -->
+    <rect x="80" y="120" width="12" height="12" fill="#4a7c59"/>
+    <rect x="92" y="120" width="12" height="12" fill="#2d5a3d"/>
+    <rect x="80" y="132" width="12" height="12" fill="#6b9b7a"/>
+    <rect x="92" y="132" width="12" height="12" fill="#4a7c59"/>
+
+    <rect x="1050" y="80" width="12" height="12" fill="#4a7c59"/>
+    <rect x="1062" y="80" width="12" height="12" fill="#39ff14" opacity="0.8"/>
+    <rect x="1050" y="92" width="12" height="12" fill="#6b9b7a"/>
+    <rect x="1062" y="92" width="12" height="12" fill="#4a7c59"/>
+
+    <rect x="150" y="480" width="12" height="12" fill="#d4a574"/>
+    <rect x="162" y="480" width="12" height="12" fill="#b8864a"/>
+    <rect x="150" y="492" width="12" height="12" fill="#e8c9a0"/>
+    <rect x="162" y="492" width="12" height="12" fill="#d4a574"/>
+
+    <rect x="980" y="520" width="12" height="12" fill="#4a7c59"/>
+    <rect x="992" y="520" width="12" height="12" fill="#2d5a3d"/>
+    <rect x="1004" y="520" width="12" height="12" fill="#6b9b7a"/>
+    <rect x="980" y="532" width="12" height="12" fill="#6b9b7a"/>
+    <rect x="992" y="532" width="12" height="12" fill="#4a7c59"/>
+    <rect x="1004" y="532" width="12" height="12" fill="#2d5a3d"/>
+  </g>
+
+  <!-- Logo symbol -->
+  <g transform="translate(520, 180)">
+    <path d="M80 0 L160 80 L80 160 L0 80 Z" fill="url(#moss-grad)" stroke="#39ff14" stroke-width="2"/>
+    <rect x="56" y="56" width="16" height="16" fill="#39ff14"/>
+    <rect x="72" y="56" width="16" height="16" fill="#6b9b7a"/>
+    <rect x="72" y="72" width="16" height="16" fill="#4a7c59"/>
+    <rect x="56" y="72" width="16" height="16" fill="#6b9b7a"/>
+    <rect x="88" y="72" width="16" height="16" fill="#39ff14" opacity="0.6"/>
+  </g>
+
+  <!-- Text -->
+  <text x="600" y="400" text-anchor="middle" fill="#e8e4dd" font-family="SF Mono, Fira Code, monospace" font-size="64" font-weight="600">
+    re/acc commons
+  </text>
+
+  <text x="600" y="460" text-anchor="middle" fill="#a8a298" font-family="Inter, -apple-system, sans-serif" font-size="28">
+    Fork the future. Seed the commons.
+  </text>
+
+  <!-- Terminal accent -->
+  <g transform="translate(440, 510)">
+    <rect x="0" y="0" width="320" height="40" rx="4" fill="#1a1a1a" stroke="#4a7c594d" stroke-width="1"/>
+    <circle cx="16" cy="20" r="4" fill="#ff5f56"/>
+    <circle cx="32" cy="20" r="4" fill="#ffbd2e"/>
+    <circle cx="48" cy="20" r="4" fill="#27ca3f"/>
+    <text x="70" y="26" fill="#39ff14" font-family="SF Mono, Fira Code, monospace" font-size="14">
+      $ init --regenerative --accelerate
+    </text>
+  </g>
+
+  <!-- Border accent -->
+  <rect x="0" y="0" width="1200" height="4" fill="#4a7c59"/>
+  <rect x="0" y="626" width="1200" height="4" fill="#4a7c59"/>
+</svg>
