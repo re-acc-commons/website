@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" style="image-rendering: pixelated;">
+  <!-- Outer glow -->
+  <rect x="24" y="0" width="16" height="4" fill="#e8c9a0" opacity="0.5"/>
+  <rect x="24" y="60" width="16" height="4" fill="#e8c9a0" opacity="0.5"/>
+  <rect x="0" y="24" width="4" height="16" fill="#e8c9a0" opacity="0.5"/>
+  <rect x="60" y="24" width="4" height="16" fill="#e8c9a0" opacity="0.5"/>
+
+  <!-- Main rays -->
+  <rect x="28" y="4" width="8" height="8" fill="#d4a574"/>
+  <rect x="28" y="52" width="8" height="8" fill="#d4a574"/>
+  <rect x="4" y="28" width="8" height="8" fill="#d4a574"/>
+  <rect x="52" y="28" width="8" height="8" fill="#d4a574"/>
+
+  <!-- Diagonal rays -->
+  <rect x="8" y="8" width="8" height="8" fill="#b8864a"/>
+  <rect x="12" y="12" width="4" height="4" fill="#d4a574"/>
+
+  <rect x="48" y="8" width="8" height="8" fill="#b8864a"/>
+  <rect x="48" y="12" width="4" height="4" fill="#d4a574"/>
+
+  <rect x="8" y="48" width="8" height="8" fill="#b8864a"/>
+  <rect x="12" y="48" width="4" height="4" fill="#d4a574"/>
+
+  <rect x="48" y="48" width="8" height="8" fill="#b8864a"/>
+  <rect x="48" y="48" width="4" height="4" fill="#d4a574"/>
+
+  <!-- Secondary rays -->
+  <rect x="20" y="8" width="4" height="4" fill="#d4a574" opacity="0.7"/>
+  <rect x="40" y="8" width="4" height="4" fill="#d4a574" opacity="0.7"/>
+  <rect x="20" y="52" width="4" height="4" fill="#d4a574" opacity="0.7"/>
+  <rect x="40" y="52" width="4" height="4" fill="#d4a574" opacity="0.7"/>
+  <rect x="8" y="20" width="4" height="4" fill="#d4a574" opacity="0.7"/>
+  <rect x="8" y="40" width="4" height="4" fill="#d4a574" opacity="0.7"/>
+  <rect x="52" y="20" width="4" height="4" fill="#d4a574" opacity="0.7"/>
+  <rect x="52" y="40" width="4" height="4" fill="#d4a574" opacity="0.7"/>
+
+  <!-- Sun core - outer ring -->
+  <rect x="16" y="20" width="32" height="24" fill="#d4a574"/>
+  <rect x="20" y="16" width="24" height="32" fill="#d4a574"/>
+
+  <!-- Sun core - middle -->
+  <rect x="20" y="20" width="24" height="24" fill="#e8c9a0"/>
+
+  <!-- Sun core - inner -->
+  <rect x="24" y="24" width="16" height="16" fill="#f5e6d0"/>
+
+  <!-- Center bright spot -->
+  <rect x="28" y="28" width="8" height="8" fill="#fffaf0"/>
+  <rect x="30" y="30" width="4" height="4" fill="#ffffff"/>
+
+  <!-- Living glow (subtle green for regenerative energy) -->
+  <rect x="30" y="30" width="4" height="4" fill="#39ff14" opacity="0.15"/>
+  <rect x="28" y="28" width="8" height="8" fill="#39ff14" opacity="0.1"/>
+</svg>

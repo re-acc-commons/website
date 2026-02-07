@@ -571,6 +571,231 @@ strong {
     border-radius: 50%;
 }
 
+/* SVG Pixel Art Icons */
+.pixel-icon-svg {
+    width: 64px;
+    height: 64px;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+}
+
+.pixel-icon-svg.xlarge {
+    width: 128px;
+    height: 128px;
+}
+
+.pixel-icon-svg.large {
+    width: 96px;
+    height: 96px;
+}
+
+.pixel-icon-svg.medium {
+    width: 64px;
+    height: 64px;
+}
+
+.pixel-icon-svg.small {
+    width: 48px;
+    height: 48px;
+}
+
+/* Universal Avatar */
+.symbiocene-avatar {
+    width: 120px;
+    height: 120px;
+    image-rendering: pixelated;
+    filter: drop-shadow(0 0 20px rgba(57, 255, 20, 0.3));
+}
+
+.symbiocene-avatar.hero-size {
+    width: 160px;
+    height: 160px;
+}
+
+/* Floating Decorative Pixel Art */
+.pixel-decoration {
+    position: absolute;
+    pointer-events: none;
+    opacity: 0.6;
+    image-rendering: pixelated;
+}
+
+.pixel-decoration.float {
+    animation: pixelFloat 6s ease-in-out infinite;
+}
+
+@keyframes pixelFloat {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-10px) rotate(2deg); }
+}
+
+/* Section Decorations */
+.section-decoration {
+    position: relative;
+}
+
+.section-decoration::before,
+.section-decoration::after {
+    content: '';
+    position: absolute;
+    width: 48px;
+    height: 48px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    opacity: 0.4;
+    image-rendering: pixelated;
+}
+
+.section-decoration.sprouts::before {
+    background-image: url('../assets/pixel-art/sprout.svg');
+    left: 5%;
+    top: 20%;
+}
+
+.section-decoration.sprouts::after {
+    background-image: url('../assets/pixel-art/tree.svg');
+    right: 5%;
+    bottom: 20%;
+}
+
+/* Pixel Art Strip/Border */
+.pixel-border-top {
+    height: 8px;
+    background:
+        repeating-linear-gradient(
+            90deg,
+            var(--moss-dark) 0px,
+            var(--moss-dark) 8px,
+            var(--moss) 8px,
+            var(--moss) 16px,
+            var(--moss-light) 16px,
+            var(--moss-light) 24px,
+            var(--moss) 24px,
+            var(--moss) 32px
+        );
+    image-rendering: pixelated;
+}
+
+.pixel-border-bottom {
+    height: 8px;
+    background:
+        repeating-linear-gradient(
+            90deg,
+            var(--amber-dark) 0px,
+            var(--amber-dark) 8px,
+            var(--amber) 8px,
+            var(--amber) 16px,
+            var(--amber-light) 16px,
+            var(--amber-light) 24px,
+            var(--amber) 24px,
+            var(--amber) 32px
+        );
+    image-rendering: pixelated;
+}
+
+/* Decorative Pixel Row */
+.pixel-row {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-xl);
+    padding: var(--space-xl) 0;
+    opacity: 0.8;
+}
+
+.pixel-row img {
+    width: 56px;
+    height: 56px;
+    image-rendering: pixelated;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.pixel-row img:hover {
+    transform: scale(1.15);
+    opacity: 1;
+}
+
+/* Card with Pixel Art Icon */
+.info-card .pixel-icon-svg,
+.philosophy-card .pixel-icon-svg {
+    margin-bottom: var(--space-md);
+}
+
+/* Hero Decorative Elements */
+.hero-decorations {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.hero-decorations .pixel-sprite {
+    position: absolute;
+    opacity: 0.5;
+    animation: pixelFloat 8s ease-in-out infinite;
+}
+
+.hero-decorations .pixel-sprite:nth-child(1) {
+    top: 15%;
+    left: 10%;
+    animation-delay: 0s;
+}
+
+.hero-decorations .pixel-sprite:nth-child(2) {
+    top: 20%;
+    right: 15%;
+    animation-delay: -2s;
+}
+
+.hero-decorations .pixel-sprite:nth-child(3) {
+    bottom: 25%;
+    left: 8%;
+    animation-delay: -4s;
+}
+
+.hero-decorations .pixel-sprite:nth-child(4) {
+    bottom: 20%;
+    right: 10%;
+    animation-delay: -6s;
+}
+
+/* Join Step Icons */
+.step-icon {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.step-icon img {
+    width: 100%;
+    height: 100%;
+    image-rendering: pixelated;
+}
+
+/* Footer Pixel Art Accent */
+.footer-pixel-row {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-lg);
+    padding: var(--space-lg) 0;
+    margin-bottom: var(--space-xl);
+    border-bottom: 1px solid var(--border);
+}
+
+.footer-pixel-row img {
+    width: 40px;
+    height: 40px;
+    opacity: 0.6;
+    image-rendering: pixelated;
+    transition: all 0.2s ease;
+}
+
+.footer-pixel-row img:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
 /* Manifesto Quote */
 .manifesto-quote {
     max-width: 700px;

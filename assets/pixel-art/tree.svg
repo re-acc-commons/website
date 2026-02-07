@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" style="image-rendering: pixelated;">
+  <!-- Ground -->
+  <rect x="4" y="56" width="56" height="8" fill="#3d3225"/>
+  <rect x="8" y="56" width="8" height="4" fill="#5a4a3a"/>
+  <rect x="48" y="56" width="8" height="4" fill="#5a4a3a"/>
+
+  <!-- Trunk -->
+  <rect x="26" y="40" width="12" height="16" fill="#5a4a3a"/>
+  <rect x="28" y="40" width="8" height="16" fill="#8b7355"/>
+  <rect x="30" y="40" width="4" height="16" fill="#6b5a45"/>
+
+  <!-- Roots visible -->
+  <rect x="20" y="52" width="8" height="4" fill="#5a4a3a"/>
+  <rect x="36" y="52" width="8" height="4" fill="#5a4a3a"/>
+
+  <!-- Canopy layer 1 (bottom, widest) -->
+  <rect x="8" y="28" width="48" height="12" fill="#2d5a3d"/>
+  <rect x="12" y="32" width="8" height="8" fill="#4a7c59"/>
+  <rect x="28" y="32" width="8" height="8" fill="#4a7c59"/>
+  <rect x="44" y="32" width="8" height="8" fill="#4a7c59"/>
+  <rect x="16" y="28" width="8" height="4" fill="#4a7c59"/>
+  <rect x="40" y="28" width="8" height="4" fill="#4a7c59"/>
+
+  <!-- Canopy layer 2 (middle) -->
+  <rect x="12" y="20" width="40" height="8" fill="#4a7c59"/>
+  <rect x="16" y="20" width="8" height="8" fill="#6b9b7a"/>
+  <rect x="32" y="20" width="8" height="8" fill="#6b9b7a"/>
+  <rect x="40" y="24" width="8" height="4" fill="#6b9b7a"/>
+
+  <!-- Canopy layer 3 (upper) -->
+  <rect x="16" y="12" width="32" height="8" fill="#4a7c59"/>
+  <rect x="20" y="12" width="8" height="8" fill="#6b9b7a"/>
+  <rect x="36" y="12" width="8" height="8" fill="#6b9b7a"/>
+  <rect x="28" y="16" width="8" height="4" fill="#8bbb9a"/>
+
+  <!-- Crown -->
+  <rect x="24" y="4" width="16" height="8" fill="#6b9b7a"/>
+  <rect x="28" y="4" width="8" height="4" fill="#8bbb9a"/>
+  <rect x="30" y="0" width="4" height="4" fill="#6b9b7a"/>
+
+  <!-- Sunlight dapples -->
+  <rect x="40" y="16" width="4" height="4" fill="#39ff14" opacity="0.3"/>
+  <rect x="20" y="24" width="4" height="4" fill="#39ff14" opacity="0.2"/>
+  <rect x="48" y="32" width="4" height="4" fill="#39ff14" opacity="0.25"/>
+  <rect x="28" y="8" width="4" height="4" fill="#39ff14" opacity="0.3"/>
+</svg>

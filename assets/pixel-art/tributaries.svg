@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" style="image-rendering: pixelated;">
+  <!-- Land/earth background -->
+  <rect x="0" y="0" width="64" height="64" fill="#2d5a3d" opacity="0.3"/>
+
+  <!-- Multiple tributary streams converging -->
+
+  <!-- Far left tributary -->
+  <rect x="0" y="4" width="4" height="4" fill="#4a7c59"/>
+  <rect x="4" y="8" width="4" height="4" fill="#6b9b7a"/>
+  <rect x="8" y="12" width="4" height="4" fill="#4a7c59"/>
+  <rect x="12" y="16" width="4" height="4" fill="#6b9b7a"/>
+  <rect x="16" y="20" width="4" height="8" fill="#4a7c59"/>
+
+  <!-- Left tributary -->
+  <rect x="8" y="0" width="4" height="4" fill="#6b9b7a"/>
+  <rect x="12" y="4" width="4" height="4" fill="#4a7c59"/>
+  <rect x="14" y="8" width="4" height="4" fill="#6b9b7a"/>
+  <rect x="16" y="12" width="4" height="8" fill="#4a7c59"/>
+  <rect x="18" y="20" width="4" height="8" fill="#6b9b7a"/>
+
+  <!-- Center-left tributary -->
+  <rect x="24" y="0" width="4" height="8" fill="#4a7c59"/>
+  <rect x="22" y="8" width="4" height="8" fill="#6b9b7a"/>
+  <rect x="20" y="16" width="6" height="12" fill="#4a7c59"/>
+
+  <!-- Center-right tributary -->
+  <rect x="36" y="0" width="4" height="8" fill="#4a7c59"/>
+  <rect x="38" y="8" width="4" height="8" fill="#6b9b7a"/>
+  <rect x="40" y="16" width="6" height="12" fill="#4a7c59"/>
+
+  <!-- Right tributary -->
+  <rect x="52" y="0" width="4" height="4" fill="#6b9b7a"/>
+  <rect x="48" y="4" width="4" height="4" fill="#4a7c59"/>
+  <rect x="46" y="8" width="4" height="4" fill="#6b9b7a"/>
+  <rect x="44" y="12" width="4" height="8" fill="#4a7c59"/>
+  <rect x="42" y="20" width="4" height="8" fill="#6b9b7a"/>
+
+  <!-- Far right tributary -->
+  <rect x="60" y="4" width="4" height="4" fill="#4a7c59"/>
+  <rect x="56" y="8" width="4" height="4" fill="#6b9b7a"/>
+  <rect x="52" y="12" width="4" height="4" fill="#4a7c59"/>
+  <rect x="48" y="16" width="4" height="4" fill="#6b9b7a"/>
+  <rect x="44" y="20" width="4" height="8" fill="#4a7c59"/>
+
+  <!-- Main confluence zone -->
+  <rect x="18" y="28" width="28" height="8" fill="#6b9b7a"/>
+  <rect x="20" y="28" width="24" height="8" fill="#4a7c59"/>
+  <rect x="24" y="30" width="16" height="4" fill="#8bbb9a"/>
+
+  <!-- Main river flowing down -->
+  <rect x="22" y="36" width="20" height="8" fill="#6b9b7a"/>
+  <rect x="24" y="36" width="16" height="8" fill="#4a7c59"/>
+  <rect x="20" y="44" width="24" height="8" fill="#6b9b7a"/>
+  <rect x="22" y="44" width="20" height="8" fill="#4a7c59"/>
+  <rect x="16" y="52" width="32" height="12" fill="#6b9b7a"/>
+  <rect x="20" y="52" width="24" height="12" fill="#4a7c59"/>
+
+  <!-- Flow highlights -->
+  <rect x="6" y="10" width="2" height="2" fill="#8bbb9a"/>
+  <rect x="14" y="6" width="2" height="2" fill="#8bbb9a"/>
+  <rect x="26" y="4" width="2" height="2" fill="#8bbb9a"/>
+  <rect x="38" y="4" width="2" height="2" fill="#8bbb9a"/>
+  <rect x="50" y="6" width="2" height="2" fill="#8bbb9a"/>
+  <rect x="58" y="10" width="2" height="2" fill="#8bbb9a"/>
+
+  <!-- Confluence glow -->
+  <rect x="28" y="30" width="8" height="4" fill="#39ff14" opacity="0.4"/>
+  <rect x="26" y="32" width="12" height="2" fill="#39ff14" opacity="0.2"/>
+
+  <!-- Energy pulses along tributaries -->
+  <rect x="10" y="14" width="2" height="2" fill="#39ff14" opacity="0.5">
+    <animate attributeName="opacity" values="0.2;0.6;0.2" dur="2s" repeatCount="indefinite"/>
+  </rect>
+  <rect x="40" y="10" width="2" height="2" fill="#39ff14" opacity="0.5">
+    <animate attributeName="opacity" values="0.6;0.2;0.6" dur="2.5s" repeatCount="indefinite"/>
+  </rect>
+  <rect x="30" y="50" width="4" height="2" fill="#39ff14" opacity="0.4">
+    <animate attributeName="opacity" values="0.2;0.5;0.2" dur="3s" repeatCount="indefinite"/>
+  </rect>
+</svg>
