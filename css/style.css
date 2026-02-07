@@ -168,7 +168,7 @@ strong {
 }
 
 .section {
-    padding: var(--space-2xl) 0;
+    padding: var(--space-xl) 0;
 }
 
 .section-header {
@@ -412,12 +412,13 @@ strong {
     gap: var(--space-md);
     justify-content: center;
     flex-wrap: wrap;
+    margin-bottom: var(--space-2xl);
 }
 
 /* Scroll Indicator */
 .scroll-indicator {
     position: absolute;
-    bottom: var(--space-xl);
+    bottom: var(--space-lg);
     left: 50%;
     transform: translateX(-50%);
     display: flex;
@@ -1296,6 +1297,7 @@ strong {
 .governance-timeline {
     position: relative;
     padding-left: var(--space-xl);
+    margin-top: var(--space-xl);
 }
 
 .governance-timeline::before {
