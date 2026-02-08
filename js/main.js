@@ -4,7 +4,7 @@
  */
 
 // ═══════════════════════════════════════════════════════════
-// PIXEL GARDEN — Conway's Game of Life inspired animation
+// PIXEL GARDEN — Organic agent swarm animation
 // ═══════════════════════════════════════════════════════════
 
 class PixelGarden {
@@ -13,17 +13,20 @@ class PixelGarden {
         if (!this.canvas) return;
 
         this.ctx = this.canvas.getContext('2d');
-        this.cellSize = 8;
+        this.cellSize = 6;
         this.grid = [];
         this.nextGrid = [];
         this.frameCount = 0;
-        this.updateInterval = 8; // Update every N frames for subtle movement
+        this.updateInterval = 20; // Slower updates for organic feel
+        this.time = 0;
 
-        // Color palette - earth tones with fade states
+        // Color palette - matrix greens + earth tones
         this.colors = {
-            moss: ['#2d5a3d', '#4a7c59', '#6b9b7a'],
-            amber: ['#b8864a', '#d4a574', '#e8c9a0'],
-            soil: ['#3d3225', '#5a4a3a', '#8b7355'],
+            moss: ['#1a3d1a', '#2d5a3d', '#4a7c59'],
+            matrix: ['#003300', '#005500', '#00aa00', '#00dd00'],
+            glow: ['#00ff00', '#33ff33', '#66ff66'],
+            amber: ['#5a4420', '#8b6914', '#b8864a'],
+            soil: ['#1a1a12', '#2d2820', '#3d3225'],
             terminal: '#39ff14'
         };
 
@@ -50,7 +53,7 @@ class PixelGarden {
         this.grid = [];
         this.nextGrid = [];
 
-        // Initialize empty grids
+        // Initialize grids
         for (let y = 0; y < this.rows; y++) {
             this.grid[y] = [];
             this.nextGrid[y] = [];
@@ -60,83 +63,57 @@ class PixelGarden {
             }
         }
 
-        // Seed with organic clusters
-        const clusterCount = Math.floor((this.cols * this.rows) / 100);
-
-        for (let i = 0; i < clusterCount; i++) {
-            const centerX = Math.floor(Math.random() * this.cols);
-            const centerY = Math.floor(Math.random() * this.rows);
-            const size = 2 + Math.random() * 5;
-            const types = ['moss', 'moss', 'moss', 'amber', 'soil'];
-            const type = types[Math.floor(Math.random() * types.length)];
-
-            // Create cluster with common life patterns
-            this.seedPattern(centerX, centerY, type);
+        // Dense initial seeding for swarm effect
+        const density = 0.18;
+        for (let y = 0; y < this.rows; y++) {
+            for (let x = 0; x < this.cols; x++) {
+                if (Math.random() < density) {
+                    // Weighted towards greens for Matrix feel
+                    const types = ['moss', 'moss', 'matrix', 'matrix', 'matrix', 'glow', 'amber', 'soil'];
+                    const type = types[Math.floor(Math.random() * types.length)];
+                    const maxIndex = this.colors[type].length;
+                    this.grid[y][x] = {
+                        type,
+                        colorIndex: Math.floor(Math.random() * maxIndex),
+                        energy: 0.5 + Math.random() * 0.5,
+                        phase: Math.random() * Math.PI * 2
+                    };
+                }
+            }
         }
 
-        // Add sparse terminal accent cells
-        for (let i = 0; i < 15; i++) {
+        // Scatter bright glow accents
+        for (let i = 0; i < 30; i++) {
             const x = Math.floor(Math.random() * this.cols);
             const y = Math.floor(Math.random() * this.rows);
             this.grid[y][x] = {
-                type: 'terminal',
-                age: 0,
-                fade: 1
+                type: 'glow',
+                colorIndex: Math.floor(Math.random() * 3),
+                energy: 0.8,
+                phase: Math.random() * Math.PI * 2
             };
-        }
-    }
-
-    seedPattern(cx, cy, type) {
-        // Various small patterns that create interesting life dynamics
-        const patterns = [
-            // Glider
-            [[0,0], [1,0], [2,0], [2,1], [1,2]],
-            // Small exploder
-            [[0,0], [0,1], [0,2], [1,0], [1,2], [2,1]],
-            // Block cluster
-            [[0,0], [1,0], [0,1], [1,1], [3,0], [3,1]],
-            // Line
-            [[0,0], [1,0], [2,0], [3,0]],
-            // L-shape
-            [[0,0], [0,1], [0,2], [1,2], [2,2]],
-            // Random scatter
-            [[0,0], [2,1], [1,2], [3,0], [2,3]]
-        ];
-
-        const pattern = patterns[Math.floor(Math.random() * patterns.length)];
-        const colorIndex = Math.floor(Math.random() * 3);
-
-        for (const [dx, dy] of pattern) {
-            const x = cx + dx;
-            const y = cy + dy;
-            if (x >= 0 && x < this.cols && y >= 0 && y < this.rows) {
-                this.grid[y][x] = {
-                    type,
-                    colorIndex,
-                    age: 0,
-                    fade: 1
-                };
-            }
         }
     }
 
     countNeighbors(x, y) {
         let count = 0;
+        let totalEnergy = 0;
         for (let dy = -1; dy <= 1; dy++) {
             for (let dx = -1; dx <= 1; dx++) {
                 if (dx === 0 && dy === 0) continue;
                 const nx = (x + dx + this.cols) % this.cols;
                 const ny = (y + dy + this.rows) % this.rows;
-                if (this.grid[ny][nx] && this.grid[ny][nx].fade > 0.3) {
+                const cell = this.grid[ny][nx];
+                if (cell && cell.energy > 0.2) {
                     count++;
+                    totalEnergy += cell.energy;
                 }
             }
         }
-        return count;
+        return { count, avgEnergy: count > 0 ? totalEnergy / count : 0 };
     }
 
     getNeighborType(x, y) {
-        // Get the most common type among neighbors
         const types = {};
         for (let dy = -1; dy <= 1; dy++) {
             for (let dx = -1; dx <= 1; dx++) {
@@ -144,12 +121,12 @@ class PixelGarden {
                 const nx = (x + dx + this.cols) % this.cols;
                 const ny = (y + dy + this.rows) % this.rows;
                 const cell = this.grid[ny][nx];
-                if (cell && cell.fade > 0.3) {
+                if (cell && cell.energy > 0.2 && cell.type !== 'glow') {
                     types[cell.type] = (types[cell.type] || 0) + 1;
                 }
             }
         }
-        let maxType = 'moss';
+        let maxType = 'matrix';
         let maxCount = 0;
         for (const [type, count] of Object.entries(types)) {
             if (count > maxCount) {
@@ -161,42 +138,60 @@ class PixelGarden {
     }
 
     updateGrid() {
-        // Copy current grid to next
+        // Organic swarm rules - more chaotic than Conway's
         for (let y = 0; y < this.rows; y++) {
             for (let x = 0; x < this.cols; x++) {
                 const cell = this.grid[y][x];
-                const neighbors = this.countNeighbors(x, y);
+                const { count, avgEnergy } = this.countNeighbors(x, y);
 
-                if (cell && cell.fade > 0.1) {
-                    // Living cell - modified rules for organic feel
-                    // Survive with 2-3 neighbors, slowly fade otherwise
-                    if (neighbors >= 2 && neighbors <= 3) {
+                if (cell && cell.energy > 0.1) {
+                    // Living cell
+                    let newEnergy = cell.energy;
+
+                    if (count <= 1) {
+                        // Lonely - lose energy
+                        newEnergy -= 0.08;
+                    } else if (count >= 2 && count <= 3) {
+                        // Happy - gain energy slowly
+                        newEnergy += 0.02;
+                    } else if (count >= 4 && count <= 5) {
+                        // Crowded - stable but stressed
+                        newEnergy -= 0.03;
+                    } else if (count > 5) {
+                        // Overcrowded - die faster
+                        newEnergy -= 0.12;
+                    }
+
+                    // Random fluctuation for organic feel
+                    newEnergy += (Math.random() - 0.5) * 0.04;
+
+                    // Clamp energy
+                    newEnergy = Math.max(0, Math.min(1, newEnergy));
+
+                    if (newEnergy > 0.05) {
                         this.nextGrid[y][x] = {
                             ...cell,
-                            age: cell.age + 1,
-                            fade: Math.min(1, cell.fade + 0.1)
+                            energy: newEnergy
                         };
-                    } else if (neighbors < 2 || neighbors > 4) {
-                        // Underpopulation or overcrowding - fade out
-                        this.nextGrid[y][x] = {
-                            ...cell,
-                            fade: cell.fade - 0.15
-                        };
-                        if (this.nextGrid[y][x].fade <= 0) {
-                            this.nextGrid[y][x] = null;
-                        }
                     } else {
-                        this.nextGrid[y][x] = { ...cell };
+                        this.nextGrid[y][x] = null;
                     }
                 } else {
-                    // Dead cell - birth with exactly 3 neighbors
-                    if (neighbors === 3) {
+                    // Dead cell - birth conditions
+                    // More lenient birth rules for continuous activity
+                    if (count >= 2 && count <= 4 && avgEnergy > 0.4 && Math.random() < 0.3) {
                         const type = this.getNeighborType(x, y);
+                        // Small chance to mutate type
+                        const mutationTypes = ['moss', 'matrix', 'matrix', 'glow', 'amber', 'soil'];
+                        const actualType = Math.random() < 0.1
+                            ? mutationTypes[Math.floor(Math.random() * mutationTypes.length)]
+                            : type;
+                        const maxIndex = this.colors[actualType].length;
                         this.nextGrid[y][x] = {
-                            type,
-                            colorIndex: Math.floor(Math.random() * 3),
-                            age: 0,
-                            fade: 0.3
+                            type: actualType,
+                            colorIndex: Math.floor(Math.random() * maxIndex),
+                            energy: 0.3 + Math.random() * 0.3,
+                            phase: Math.random() * Math.PI * 2
                         };
                     } else {
                         this.nextGrid[y][x] = null;
@@ -208,29 +203,56 @@ class PixelGarden {
         // Swap grids
         [this.grid, this.nextGrid] = [this.nextGrid, this.grid];
 
-        // Occasionally seed new life to prevent extinction
-        if (Math.random() < 0.02) {
+        // Continuous spawning to maintain swarm density
+        const spawnCount = Math.floor(Math.random() * 6) + 3;
+        for (let i = 0; i < spawnCount; i++) {
             const x = Math.floor(Math.random() * this.cols);
             const y = Math.floor(Math.random() * this.rows);
-            const types = ['moss', 'moss', 'amber', 'soil'];
-            this.seedPattern(x, y, types[Math.floor(Math.random() * types.length)]);
+            if (!this.grid[y][x]) {
+                const types = ['moss', 'matrix', 'matrix', 'matrix', 'glow', 'amber', 'soil'];
+                const type = types[Math.floor(Math.random() * types.length)];
+                const maxIndex = this.colors[type].length;
+                this.grid[y][x] = {
+                    type,
+                    colorIndex: Math.floor(Math.random() * maxIndex),
+                    energy: 0.4 + Math.random() * 0.4,
+                    phase: Math.random() * Math.PI * 2
+                };
+            }
         }
     }
 
     draw() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
+        // Global slow pulse - very subtle breathing
+        const globalPulse = 0.9 + 0.1 * Math.sin(this.time * 0.2);
+
         for (let y = 0; y < this.rows; y++) {
             for (let x = 0; x < this.cols; x++) {
                 const cell = this.grid[y][x];
-                if (!cell || cell.fade <= 0) continue;
+                if (!cell || cell.energy <= 0) continue;
 
-                if (cell.type === 'terminal') {
-                    this.ctx.fillStyle = this.colors.terminal;
-                    this.ctx.globalAlpha = cell.fade * 0.7;
+                // Individual cell pulse offset by phase - slower, more organic
+                const cellPulse = 0.75 + 0.25 * Math.sin(this.time * 0.4 + cell.phase);
+                const alpha = cell.energy * cellPulse * globalPulse;
+
+                const colorArray = this.colors[cell.type];
+                if (Array.isArray(colorArray)) {
+                    this.ctx.fillStyle = colorArray[cell.colorIndex % colorArray.length];
                 } else {
-                    this.ctx.fillStyle = this.colors[cell.type][cell.colorIndex || 0];
-                    this.ctx.globalAlpha = cell.fade * 0.5;
+                    this.ctx.fillStyle = colorArray;
+                }
+
+                // Glow types are brighter, earth tones subtler
+                if (cell.type === 'glow') {
+                    this.ctx.globalAlpha = alpha * 0.55;
+                } else if (cell.type === 'matrix') {
+                    this.ctx.globalAlpha = alpha * 0.45;
+                } else if (cell.type === 'moss') {
+                    this.ctx.globalAlpha = alpha * 0.4;
+                } else {
+                    this.ctx.globalAlpha = alpha * 0.35;
                 }
 
                 this.ctx.fillRect(
@@ -247,8 +269,9 @@ class PixelGarden {
 
     animate() {
         this.frameCount++;
+        this.time += 0.016; // ~60fps time increment
 
-        // Update grid at slower interval for subtle movement
+        // Slow grid updates
         if (this.frameCount % this.updateInterval === 0) {
             this.updateGrid();
         }
