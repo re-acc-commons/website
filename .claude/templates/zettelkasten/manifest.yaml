@@ -1,0 +1,294 @@
+# Zettelkasten / Personal Knowledge Garden Template
+# Atomic notes with rich connections
+
+name: Personal Knowledge Garden
+description: |
+  A Zettelkasten-inspired system for building a second brain.
+  Atomic notes, rich linking, and emergent structure.
+
+version: "1.0"
+author: OPAL
+
+use_cases:
+  - Personal knowledge management
+  - Learning and study
+  - Writing and thinking
+  - Idea development
+
+# Schema definition
+schema:
+  resource_types:
+    - id: note
+      name: Note
+      plural: Notes
+      description: Atomic ideas - one idea per note
+      directory: notes/
+      icon: "📝"
+      keywords: [idea, thought, observation, insight]
+      fields:
+        - name: title
+          type: string
+          required: true
+        - name: tags
+          type: list
+        - name: source
+          type: reference
+          to: source
+
+    - id: concept
+      name: Concept
+      plural: Concepts
+      description: Larger themes that connect multiple notes
+      directory: concepts/
+      icon: "🧠"
+      keywords: [theme, topic, subject, category]
+      fields:
+        - name: title
+          type: string
+          required: true
+        - name: definition
+          type: text
+        - name: related_concepts
+          type: references
+          to: concept
+
+    - id: source
+      name: Source
+      plural: Sources
+      description: Books, articles, videos, podcasts
+      directory: sources/
+      icon: "📚"
+      keywords: [book, article, paper, video, podcast]
+      fields:
+        - name: title
+          type: string
+          required: true
+        - name: author
+          type: string
+        - name: type
+          type: enum
+          options: [book, article, paper, video, podcast, website]
+        - name: url
+          type: url
+        - name: rating
+          type: number
+          min: 1
+          max: 5
+
+    - id: person
+      name: Person
+      plural: People
+      description: Thinkers, authors, colleagues
+      directory: people/
+      icon: "👤"
+      keywords: [author, thinker, colleague, friend]
+      fields:
+        - name: name
+          type: string
+          required: true
+        - name: role
+          type: string
+        - name: contact
+          type: text
+
+    - id: question
+      name: Question
+      plural: Questions
+      description: Open inquiries to explore
+      directory: questions/
+      icon: "❓"
+      keywords: [question, inquiry, wonder, explore]
+      fields:
+        - name: question
+          type: string
+          required: true
+        - name: status
+          type: enum
+          options: [open, exploring, answered, abandoned]
+        - name: answer
+          type: text
+
+  dimensions:
+    - id: status
+      name: Status
+      values:
+        - id: seedling
+          name: Seedling
+          description: New, needs development
+        - id: growing
+          name: Growing
+          description: Being actively developed
+        - id: evergreen
+          name: Evergreen
+          description: Mature and stable
+        - id: archived
+          name: Archived
+          description: No longer maintained
+
+    - id: confidence
+      name: Confidence
+      values:
+        - id: speculation
+          name: Speculation
+        - id: hypothesis
+          name: Hypothesis
+        - id: belief
+          name: Belief
+        - id: knowledge
+          name: Knowledge
+
+  relationships:
+    - id: relates_to
+      name: Relates To
+      bidirectional: true
+      description: General connection between ideas
+
+    - id: supports
+      name: Supports
+      inverse: supported_by
+      description: This idea supports another
+
+    - id: contradicts
+      name: Contradicts
+      bidirectional: true
+      description: These ideas are in tension
+
+    - id: derived_from
+      name: Derived From
+      inverse: inspired
+      description: This idea came from another
+
+    - id: authored_by
+      name: Authored By
+      inverse: authored
+      description: Person who created this
+
+directories:
+  - notes/
+  - concepts/
+  - sources/
+  - people/
+  - questions/
+  - _inbox/
+  - _staging/
+  - _index/
+
+templates:
+  note: |
+    ---
+    title: "{{title}}"
+    created: {{date}}
+    status: seedling
+    confidence: hypothesis
+    tags: []
+    source: null
+    ---
+
+    # {{title}}
+
+    ## Idea
+
+
+
+    ## Context
+
+    Why is this interesting or important?
+
+    ## Connections
+
+    - Related to: [[]]
+    - Supports: [[]]
+    - Contradicts: [[]]
+
+  concept: |
+    ---
+    title: "{{title}}"
+    created: {{date}}
+    status: growing
+    ---
+
+    # {{title}}
+
+    ## Definition
+
+
+
+    ## Key Ideas
+
+    -
+
+    ## Related Concepts
+
+    -
+
+  source: |
+    ---
+    title: "{{title}}"
+    author: ""
+    type: book
+    url: null
+    rating: null
+    created: {{date}}
+    ---
+
+    # {{title}}
+
+    ## Summary
+
+
+
+    ## Key Takeaways
+
+    -
+
+    ## Quotes
+
+    >
+
+    ## Notes
+
+    - [[]]
+
+  question: |
+    ---
+    question: "{{title}}"
+    status: open
+    created: {{date}}
+    ---
+
+    # {{title}}
+
+    ## Context
+
+    Why am I asking this?
+
+    ## Exploration
+
+    -
+
+    ## Current Thinking
+
+
+
+    ## Answer
+
+    (When resolved)
+
+sources:
+  filesystem:
+    enabled: true
+    watch:
+      - path: ~/Downloads/*.pdf
+        type: source
+
+processing:
+  extract_entities: true
+  create_backlinks: true
+  detect_concepts: true
+  confidence_threshold: 0.7
+
+  # Special processing for this template
+  zettelkasten:
+    auto_link_concepts: true
+    suggest_connections: true
+    track_note_maturity: true

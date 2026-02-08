@@ -1,0 +1,349 @@
+# Life Archive Template
+# Personal history, memories, and relationships
+
+name: Life Archive
+description: |
+  A system for preserving and connecting your personal history.
+  Memories, relationships, places, and life events.
+
+version: "1.0"
+author: OPAL
+
+use_cases:
+  - Personal history preservation
+  - Family documentation
+  - Memoir writing
+  - Relationship tracking
+  - Life review and reflection
+
+schema:
+  resource_types:
+    - id: memory
+      name: Memory
+      plural: Memories
+      description: Personal experiences and stories
+      directory: memories/
+      icon: "💭"
+      keywords: [memory, experience, story, moment, event]
+      fields:
+        - name: title
+          type: string
+          required: true
+        - name: date
+          type: date
+          description: When this happened
+        - name: location
+          type: reference
+          to: place
+        - name: people
+          type: references
+          to: person
+        - name: emotion
+          type: enum
+          options: [joy, sadness, surprise, fear, anger, love, pride, gratitude, nostalgia]
+        - name: significance
+          type: enum
+          options: [everyday, meaningful, milestone, transformative]
+
+    - id: person
+      name: Person
+      plural: People
+      description: People in your life
+      directory: people/
+      icon: "👤"
+      keywords: [person, friend, family, colleague, acquaintance]
+      fields:
+        - name: name
+          type: string
+          required: true
+        - name: relationship
+          type: string
+          description: How you know them
+        - name: met
+          type: date
+        - name: met_location
+          type: reference
+          to: place
+        - name: birthday
+          type: date
+        - name: contact
+          type: text
+        - name: status
+          type: enum
+          options: [active, distant, lost_touch, deceased]
+
+    - id: place
+      name: Place
+      plural: Places
+      description: Significant locations
+      directory: places/
+      icon: "📍"
+      keywords: [place, location, home, city, country]
+      fields:
+        - name: name
+          type: string
+          required: true
+        - name: type
+          type: enum
+          options: [home, work, school, city, country, venue, nature]
+        - name: address
+          type: text
+        - name: coordinates
+          type: string
+        - name: period
+          type: string
+          description: When you were connected to this place
+
+    - id: event
+      name: Event
+      plural: Events
+      description: Significant life events
+      directory: events/
+      icon: "📅"
+      keywords: [event, milestone, celebration, occasion]
+      fields:
+        - name: title
+          type: string
+          required: true
+        - name: date
+          type: date
+          required: true
+        - name: type
+          type: enum
+          options: [birth, death, wedding, graduation, job, move, travel, achievement, loss]
+        - name: people
+          type: references
+          to: person
+        - name: location
+          type: reference
+          to: place
+
+    - id: artifact
+      name: Artifact
+      plural: Artifacts
+      description: Photos, letters, objects with meaning
+      directory: artifacts/
+      icon: "🖼️"
+      keywords: [photo, letter, object, memento, keepsake]
+      fields:
+        - name: title
+          type: string
+          required: true
+        - name: type
+          type: enum
+          options: [photo, letter, document, object, recording]
+        - name: date
+          type: date
+        - name: file
+          type: file
+        - name: description
+          type: text
+        - name: people
+          type: references
+          to: person
+
+    - id: journal
+      name: Journal Entry
+      plural: Journal
+      description: Daily reflections and thoughts
+      directory: journal/
+      icon: "📔"
+      keywords: [journal, diary, reflection, daily]
+      fields:
+        - name: date
+          type: date
+          required: true
+        - name: mood
+          type: enum
+          options: [great, good, okay, difficult, terrible]
+        - name: highlights
+          type: list
+        - name: gratitude
+          type: list
+
+  dimensions:
+    - id: life_period
+      name: Life Period
+      values:
+        - id: childhood
+          name: Childhood
+        - id: adolescence
+          name: Adolescence
+        - id: young_adult
+          name: Young Adulthood
+        - id: adult
+          name: Adulthood
+        - id: present
+          name: Present
+
+    - id: theme
+      name: Life Theme
+      values:
+        - id: family
+          name: Family
+        - id: friendship
+          name: Friendship
+        - id: love
+          name: Love
+        - id: career
+          name: Career
+        - id: education
+          name: Education
+        - id: health
+          name: Health
+        - id: adventure
+          name: Adventure
+        - id: creativity
+          name: Creativity
+        - id: loss
+          name: Loss
+        - id: growth
+          name: Growth
+
+  relationships:
+    - id: involves
+      name: Involves
+      description: People involved in a memory/event
+
+    - id: happened_at
+      name: Happened At
+      description: Where something took place
+
+    - id: related_to
+      name: Related To
+      bidirectional: true
+
+    - id: family_of
+      name: Family Of
+      bidirectional: true
+      description: Family relationship
+
+    - id: friend_of
+      name: Friend Of
+      bidirectional: true
+
+    - id: preceded_by
+      name: Preceded By
+      inverse: followed_by
+      description: Temporal sequence
+
+directories:
+  - memories/
+  - people/
+  - places/
+  - events/
+  - artifacts/
+  - journal/
+  - _inbox/
+  - _staging/
+  - _index/
+
+templates:
+  memory: |
+    ---
+    title: "{{title}}"
+    date: null
+    location: null
+    people: []
+    emotion: null
+    significance: meaningful
+    life_period: present
+    themes: []
+    created: {{date}}
+    ---
+
+    # {{title}}
+
+    ## What Happened
+
+
+
+    ## Why It Matters
+
+
+
+    ## People Involved
+
+    -
+
+    ## Sensory Details
+
+    What did you see, hear, smell, feel?
+
+  person: |
+    ---
+    name: "{{title}}"
+    relationship: ""
+    met: null
+    met_location: null
+    birthday: null
+    status: active
+    created: {{date}}
+    ---
+
+    # {{title}}
+
+    ## How We Met
+
+
+
+    ## Our Relationship
+
+
+
+    ## Shared Memories
+
+    - [[]]
+
+    ## Contact
+
+    -
+
+  journal: |
+    ---
+    date: {{date}}
+    mood: okay
+    highlights: []
+    gratitude: []
+    ---
+
+    # Journal - {{date}}
+
+    ## Today
+
+
+
+    ## Highlights
+
+    -
+
+    ## Gratitude
+
+    -
+
+    ## Tomorrow
+
+    -
+
+sources:
+  filesystem:
+    enabled: true
+    watch:
+      - path: ~/Pictures/
+        type: artifact
+        filter: "*.{jpg,jpeg,png}"
+
+processing:
+  extract_entities: true
+  detect_people: true
+  detect_places: true
+  detect_dates: true
+  create_timeline: true
+  confidence_threshold: 0.6
+
+  # Special processing for life archive
+  life_archive:
+    auto_detect_relationships: true
+    build_family_tree: true
+    create_timeline_view: true
+    suggest_memory_prompts: true

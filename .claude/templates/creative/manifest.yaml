@@ -1,0 +1,345 @@
+# Creative Portfolio Template
+# Works, ideas, inspirations
+
+name: Creative Portfolio
+description: |
+  A system for managing creative work and inspiration.
+  Track projects, ideas, references, and creative development.
+
+version: "1.0"
+author: OPAL
+
+use_cases:
+  - Artists and designers
+  - Writers and authors
+  - Musicians and composers
+  - Creative professionals
+  - Hobby creatives
+
+schema:
+  resource_types:
+    - id: work
+      name: Work
+      plural: Works
+      description: Creative works you've made
+      directory: works/
+      icon: "🎨"
+      keywords: [work, piece, project, creation, artwork]
+      fields:
+        - name: title
+          type: string
+          required: true
+        - name: medium
+          type: enum
+          options: [writing, visual, audio, video, mixed, digital, physical]
+        - name: status
+          type: enum
+          options: [idea, in_progress, draft, complete, published]
+        - name: started
+          type: date
+        - name: completed
+          type: date
+        - name: description
+          type: text
+        - name: files
+          type: list
+
+    - id: idea
+      name: Idea
+      plural: Ideas
+      description: Creative ideas and sparks
+      directory: ideas/
+      icon: "💡"
+      keywords: [idea, concept, spark, inspiration]
+      fields:
+        - name: title
+          type: string
+          required: true
+        - name: medium
+          type: enum
+          options: [writing, visual, audio, video, mixed, any]
+        - name: status
+          type: enum
+          options: [raw, developing, ready, used, abandoned]
+        - name: energy
+          type: enum
+          options: [high, medium, low]
+          description: How excited are you about this?
+
+    - id: inspiration
+      name: Inspiration
+      plural: Inspirations
+      description: Things that inspire you
+      directory: inspirations/
+      icon: "✨"
+      keywords: [inspiration, reference, influence, mood]
+      fields:
+        - name: title
+          type: string
+          required: true
+        - name: type
+          type: enum
+          options: [artwork, music, writing, film, nature, person, place, other]
+        - name: creator
+          type: string
+        - name: url
+          type: url
+        - name: why
+          type: text
+          description: Why does this inspire you?
+
+    - id: reference
+      name: Reference
+      plural: References
+      description: Reference materials and resources
+      directory: references/
+      icon: "📎"
+      keywords: [reference, resource, tutorial, guide]
+      fields:
+        - name: title
+          type: string
+          required: true
+        - name: type
+          type: enum
+          options: [tutorial, technique, color, typography, composition, style, other]
+        - name: url
+          type: url
+        - name: file
+          type: file
+
+    - id: collection
+      name: Collection
+      plural: Collections
+      description: Curated groupings
+      directory: collections/
+      icon: "📁"
+      keywords: [collection, series, set, group]
+      fields:
+        - name: title
+          type: string
+          required: true
+        - name: description
+          type: text
+        - name: items
+          type: references
+          to: work
+
+    - id: journal
+      name: Studio Journal
+      plural: Journal
+      description: Creative practice reflections
+      directory: journal/
+      icon: "📔"
+      keywords: [journal, reflection, practice, progress]
+      fields:
+        - name: date
+          type: date
+          required: true
+        - name: mood
+          type: enum
+          options: [inspired, productive, stuck, exploring, resting]
+        - name: worked_on
+          type: references
+          to: work
+
+  dimensions:
+    - id: stage
+      name: Creative Stage
+      values:
+        - id: ideation
+          name: Ideation
+        - id: exploration
+          name: Exploration
+        - id: development
+          name: Development
+        - id: refinement
+          name: Refinement
+        - id: complete
+          name: Complete
+
+    - id: visibility
+      name: Visibility
+      values:
+        - id: private
+          name: Private
+        - id: draft
+          name: Draft
+        - id: shared
+          name: Shared
+        - id: published
+          name: Published
+
+  relationships:
+    - id: inspired_by
+      name: Inspired By
+      inverse: inspired
+      description: Creative influence
+
+    - id: part_of
+      name: Part Of
+      inverse: contains
+      description: Belongs to collection or series
+
+    - id: evolved_into
+      name: Evolved Into
+      inverse: evolved_from
+      description: Creative development
+
+    - id: related_to
+      name: Related To
+      bidirectional: true
+
+directories:
+  - works/
+  - ideas/
+  - inspirations/
+  - references/
+  - collections/
+  - journal/
+  - _inbox/
+  - _staging/
+  - _index/
+
+templates:
+  work: |
+    ---
+    title: "{{title}}"
+    medium: mixed
+    status: idea
+    started: {{date}}
+    completed: null
+    stage: ideation
+    visibility: private
+    created: {{date}}
+    ---
+
+    # {{title}}
+
+    ## Description
+
+
+
+    ## Vision
+
+    What am I trying to create or express?
+
+    ## Process
+
+    -
+
+    ## Inspirations
+
+    - [[]]
+
+    ## Files & Versions
+
+    -
+
+    ## Reflections
+
+
+
+  idea: |
+    ---
+    title: "{{title}}"
+    medium: any
+    status: raw
+    energy: medium
+    created: {{date}}
+    ---
+
+    # {{title}}
+
+    ## The Spark
+
+    What triggered this idea?
+
+    ## The Idea
+
+
+
+    ## Visual/Sensory Notes
+
+    What does it look/sound/feel like?
+
+    ## Possible Approaches
+
+    -
+
+    ## Related Ideas
+
+    - [[]]
+
+  inspiration: |
+    ---
+    title: "{{title}}"
+    type: other
+    creator: ""
+    url: null
+    created: {{date}}
+    ---
+
+    # {{title}}
+
+    ## What It Is
+
+
+
+    ## Why It Inspires Me
+
+
+
+    ## What I Can Learn
+
+    -
+
+    ## Related Works
+
+    - [[]]
+
+  journal: |
+    ---
+    date: {{date}}
+    mood: exploring
+    worked_on: []
+    ---
+
+    # Studio Journal - {{date}}
+
+    ## Today's Focus
+
+
+
+    ## What I Made/Did
+
+    -
+
+    ## Discoveries
+
+    -
+
+    ## Challenges
+
+    -
+
+    ## Tomorrow
+
+    -
+
+sources:
+  filesystem:
+    enabled: true
+    watch:
+      - path: ~/Pictures/inspiration/
+        type: inspiration
+        filter: "*.{jpg,jpeg,png,gif}"
+
+processing:
+  extract_entities: true
+  create_backlinks: true
+  confidence_threshold: 0.6
+
+  creative:
+    track_progress: true
+    suggest_connections: true
+    mood_tracking: true

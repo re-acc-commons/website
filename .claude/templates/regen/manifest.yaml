@@ -1,0 +1,591 @@
+# Regen Network Taxonomy Template
+# For ecological regeneration, carbon credits, and Regen ecosystem content
+#
+# Compatible with KOI (Knowledge Organization Infrastructure) and
+# the Regen Network unified ontology.
+
+name: Regen Network
+id: regen
+version: "1.0"
+author: Regen Network / OPAL
+description: |
+  For ecological regeneration knowledge, carbon credit methodologies,
+  and Regen Network ecosystem content. Designed for federation with
+  KOI (Knowledge Organization Infrastructure).
+
+use_cases:
+  - Ecological regeneration projects
+  - Carbon credit methodologies
+  - MRV (Monitoring, Reporting, Verification)
+  - Regen Ledger documentation
+  - Environmental claims and evidence
+  - Regenerative agriculture knowledge
+  - Climate action coordination
+
+federation:
+  koi_compatible: true
+  ontology_namespace: "https://regen.network/ontology/v1#"
+  taxonomy_bridge: opl-to-regen.yaml
+
+# =============================================================================
+# Schema Definition
+# =============================================================================
+
+schema:
+  resource_types:
+  # Methodologies - verification protocols for credit classes
+  - id: methodology
+    name: Methodology
+    plural: Methodologies
+    description: Credit class methodologies and verification protocols
+    directory: methodologies/
+    icon: "\U0001F4CB"  # 📋
+    regen_class: "regen:Methodology"
+    fields:
+      - name: title
+        type: string
+        required: true
+      - name: version
+        type: string
+        description: Methodology version number
+      - name: credit_class
+        type: reference
+        to: credit_class
+        description: Associated credit class
+      - name: verification_standard
+        type: string
+        description: Third-party verification standard
+      - name: ecological_domain
+        type: dimension
+        dimension: ecological_domain
+      - name: sdg_alignment
+        type: list
+        description: Aligned UN Sustainable Development Goals
+      - name: measurement_approach
+        type: text
+        description: How outcomes are measured and verified
+      - name: additionality_criteria
+        type: text
+        description: Criteria for additionality determination
+      - name: permanence_approach
+        type: text
+        description: How permanence is ensured
+
+  # Credit Classes - on-chain credit type definitions
+  - id: credit_class
+    name: Credit Class
+    plural: Credit Classes
+    description: On-chain credit type definitions on Regen Ledger
+    directory: credit-classes/
+    icon: "\U0001F331"  # 🌱
+    regen_class: "regen:CreditClass"
+    fields:
+      - name: title
+        type: string
+        required: true
+      - name: class_id
+        type: string
+        description: On-chain class identifier (e.g., C01)
+      - name: admin
+        type: reference
+        to: organization
+        description: Credit class administrator
+      - name: methodology
+        type: reference
+        to: methodology
+      - name: ecological_domain
+        type: dimension
+        dimension: ecological_domain
+      - name: credit_type
+        type: dimension
+        dimension: credit_type
+      - name: registry_url
+        type: string
+        description: Link to on-chain registry
+
+  # Projects - ecological projects generating credits
+  - id: project
+    name: Project
+    plural: Projects
+    description: Ecological projects generating verifiable credits
+    directory: projects/
+    icon: "\U0001F5FA"  # 🗺️
+    regen_class: "regen:Project"
+    fields:
+      - name: title
+        type: string
+        required: true
+      - name: project_id
+        type: string
+        description: On-chain project identifier
+      - name: location
+        type: string
+        description: Geographic location
+      - name: coordinates
+        type: string
+        description: GPS coordinates (lat, long)
+      - name: credit_class
+        type: reference
+        to: credit_class
+      - name: project_developer
+        type: reference
+        to: organization
+      - name: land_steward
+        type: reference
+        to: organization
+        description: Land owner or steward
+      - name: hectares
+        type: number
+        description: Project area in hectares
+      - name: start_date
+        type: date
+      - name: end_date
+        type: date
+      - name: status
+        type: dimension
+        dimension: project_status
+      - name: ecological_domain
+        type: dimension
+        dimension: ecological_domain
+
+  # Claims - verifiable assertions about ecological impact
+  - id: claim
+    name: Claim
+    plural: Claims
+    description: Verifiable claims about ecological outcomes
+    directory: claims/
+    icon: "\U00002713"  # ✓
+    regen_class: "regen:Claim"
+    fields:
+      - name: title
+        type: string
+        required: true
+      - name: claim_type
+        type: dimension
+        dimension: claim_type
+      - name: project
+        type: reference
+        to: project
+      - name: evidence
+        type: list
+        of: reference
+        to: evidence
+      - name: confidence
+        type: number
+        description: Confidence score 0-1
+      - name: verification_status
+        type: dimension
+        dimension: verification_status
+      - name: verifier
+        type: reference
+        to: organization
+
+  # Evidence - data supporting claims
+  - id: evidence
+    name: Evidence
+    plural: Evidence
+    description: Data and documentation supporting claims
+    directory: evidence/
+    icon: "\U0001F4CA"  # 📊
+    regen_class: "regen:Evidence"
+    fields:
+      - name: title
+        type: string
+        required: true
+      - name: evidence_type
+        type: dimension
+        dimension: evidence_type
+      - name: source
+        type: reference
+        to: artifact
+      - name: methodology
+        type: reference
+        to: methodology
+      - name: data_url
+        type: string
+        description: Link to raw data
+      - name: collection_date
+        type: date
+      - name: collector
+        type: reference
+        to: organization
+
+  # Patterns - reusable solutions (aligned with OPL)
+  - id: pattern
+    name: Pattern
+    plural: Patterns
+    description: Reusable solutions for regenerative practices
+    directory: patterns/
+    icon: "\U0001F300"  # 🌀
+    regen_class: "regen:Pattern"
+    fields:
+      - name: title
+        type: string
+        required: true
+      - name: problem
+        type: text
+        description: The problem this pattern addresses
+      - name: solution
+        type: text
+        description: The proposed solution
+      - name: ecological_domain
+        type: dimension
+        dimension: ecological_domain
+      - name: scale
+        type: dimension
+        dimension: scale
+      - name: related_patterns
+        type: list
+        of: reference
+        to: pattern
+
+  # Organizations
+  - id: organization
+    name: Organization
+    plural: Organizations
+    description: Project developers, verifiers, registries, and stewards
+    directory: organizations/
+    icon: "\U0001F3E2"  # 🏢
+    regen_class: "regen:Commons"
+    fields:
+      - name: name
+        type: string
+        required: true
+      - name: organization_type
+        type: dimension
+        dimension: organization_type
+      - name: website
+        type: string
+      - name: location
+        type: string
+      - name: description
+        type: text
+      - name: contacts
+        type: list
+        of: reference
+        to: person
+
+  # People
+  - id: person
+    name: Person
+    plural: People
+    description: Researchers, practitioners, land stewards
+    directory: people/
+    icon: "\U0001F464"  # 👤
+    regen_class: "regen:HumanActor"
+    fields:
+      - name: name
+        type: string
+        required: true
+      - name: role
+        type: string
+      - name: organization
+        type: reference
+        to: organization
+      - name: expertise
+        type: list
+        description: Areas of expertise
+      - name: website
+        type: string
+
+  # Artifacts - papers, reports, datasets
+  - id: artifact
+    name: Artifact
+    plural: Artifacts
+    description: Research papers, reports, datasets, and documentation
+    directory: artifacts/
+    icon: "\U0001F4C4"  # 📄
+    regen_class: "regen:Source"
+    fields:
+      - name: title
+        type: string
+        required: true
+      - name: artifact_type
+        type: dimension
+        dimension: artifact_type
+      - name: authors
+        type: list
+        of: reference
+        to: person
+      - name: url
+        type: string
+      - name: publication_date
+        type: date
+      - name: abstract
+        type: text
+
+  # Notes - general observations
+  - id: note
+    name: Note
+    plural: Notes
+    description: General notes and observations
+    directory: notes/
+    icon: "\U0001F4DD"  # 📝
+    regen_class: "regen:Note"
+    fields:
+      - name: title
+        type: string
+        required: true
+      - name: content
+        type: text
+      - name: tags
+        type: list
+      - name: related_to
+        type: list
+        of: reference
+
+# =============================================================================
+# Dimensions
+# =============================================================================
+
+dimensions:
+  # Ecological domains
+  - id: ecological_domain
+    name: Ecological Domain
+    description: Primary ecological focus area
+    values:
+      - id: soil-carbon
+        name: Soil Carbon
+        description: Soil organic carbon sequestration
+        sdg: ["SDG:13", "SDG:15"]
+      - id: biodiversity
+        name: Biodiversity
+        description: Species and ecosystem diversity conservation
+        sdg: ["SDG:14", "SDG:15"]
+      - id: blue-carbon
+        name: Blue Carbon
+        description: Coastal and marine carbon ecosystems
+        sdg: ["SDG:13", "SDG:14"]
+      - id: agroforestry
+        name: Agroforestry
+        description: Trees integrated with agricultural systems
+        sdg: ["SDG:2", "SDG:13", "SDG:15"]
+      - id: forest-carbon
+        name: Forest Carbon
+        description: Above and below ground forest carbon
+        sdg: ["SDG:13", "SDG:15"]
+      - id: grassland
+        name: Grassland
+        description: Grassland and rangeland ecosystems
+        sdg: ["SDG:13", "SDG:15"]
+      - id: wetland
+        name: Wetland
+        description: Wetland and peatland systems
+        sdg: ["SDG:6", "SDG:13"]
+      - id: urban-green
+        name: Urban Green
+        description: Urban greening and nature-based solutions
+        sdg: ["SDG:11", "SDG:13"]
+
+  # Project status
+  - id: project_status
+    name: Project Status
+    values:
+      - id: proposed
+        name: Proposed
+        description: Project in planning phase
+      - id: registered
+        name: Registered
+        description: Project registered on-chain
+      - id: monitoring
+        name: Monitoring
+        description: Active monitoring period
+      - id: verified
+        name: Verified
+        description: Outcomes verified by third party
+      - id: credits-issued
+        name: Credits Issued
+        description: Credits have been issued
+      - id: retired
+        name: Retired
+        description: Project or credits retired
+
+  # Credit types
+  - id: credit_type
+    name: Credit Type
+    values:
+      - id: carbon-removal
+        name: Carbon Removal
+      - id: carbon-avoidance
+        name: Carbon Avoidance
+      - id: biodiversity
+        name: Biodiversity Credit
+      - id: ecosystem-service
+        name: Ecosystem Service Credit
+
+  # Verification status
+  - id: verification_status
+    name: Verification Status
+    values:
+      - id: unverified
+        name: Unverified
+      - id: pending
+        name: Pending Verification
+      - id: verified
+        name: Verified
+      - id: disputed
+        name: Disputed
+
+  # Claim types
+  - id: claim_type
+    name: Claim Type
+    values:
+      - id: carbon-sequestration
+        name: Carbon Sequestration
+      - id: biodiversity-impact
+        name: Biodiversity Impact
+      - id: water-quality
+        name: Water Quality
+      - id: soil-health
+        name: Soil Health
+      - id: community-benefit
+        name: Community Benefit
+
+  # Evidence types
+  - id: evidence_type
+    name: Evidence Type
+    values:
+      - id: satellite-imagery
+        name: Satellite Imagery
+      - id: field-measurement
+        name: Field Measurement
+      - id: lab-analysis
+        name: Lab Analysis
+      - id: sensor-data
+        name: Sensor Data
+      - id: survey
+        name: Survey/Interview
+      - id: documentation
+        name: Documentation
+
+  # Organization types
+  - id: organization_type
+    name: Organization Type
+    values:
+      - id: project-developer
+        name: Project Developer
+      - id: land-steward
+        name: Land Steward
+      - id: verifier
+        name: Verification Body
+      - id: registry
+        name: Registry
+      - id: methodology-developer
+        name: Methodology Developer
+      - id: research-institution
+        name: Research Institution
+      - id: ngo
+        name: NGO
+      - id: government
+        name: Government Agency
+
+  # Artifact types
+  - id: artifact_type
+    name: Artifact Type
+    values:
+      - id: research-paper
+        name: Research Paper
+      - id: methodology-document
+        name: Methodology Document
+      - id: project-report
+        name: Project Report
+      - id: dataset
+        name: Dataset
+      - id: monitoring-report
+        name: Monitoring Report
+      - id: verification-report
+        name: Verification Report
+
+  # Scale (aligned with OPL civic scales)
+  - id: scale
+    name: Scale
+    values:
+      - id: plot
+        name: Plot
+        description: Individual plot or field
+      - id: farm
+        name: Farm
+        description: Farm or ranch scale
+      - id: landscape
+        name: Landscape
+        description: Landscape or watershed
+      - id: bioregional
+        name: Bioregional
+        description: Bioregional scale
+      - id: national
+        name: National
+        description: National scale
+      - id: planetary
+        name: Planetary
+        description: Global/planetary scale
+
+# =============================================================================
+# Relationships
+# =============================================================================
+
+relationships:
+  - id: implements
+    name: Implements
+    description: Project implements a methodology
+    from: [project]
+    to: [methodology]
+
+  - id: verifies
+    name: Verifies
+    description: Organization verifies a claim
+    from: [organization]
+    to: [claim]
+
+  - id: develops
+    name: Develops
+    description: Organization develops a project
+    from: [organization]
+    to: [project]
+
+  - id: stewards
+    name: Stewards
+    description: Organization stewards land
+    from: [organization]
+    to: [project]
+
+  - id: supports
+    name: Supports
+    description: Evidence supports a claim
+    from: [evidence]
+    to: [claim]
+
+  - id: derived_from
+    name: Derived From
+    description: Methodology derived from another
+    from: [methodology]
+    to: [methodology]
+
+  - id: related_to
+    name: Related To
+    description: General relationship
+    bidirectional: true
+
+# =============================================================================
+# KOI Federation Settings
+# =============================================================================
+
+koi_federation:
+  # Default RID namespace for this template
+  namespace_prefix: "orn:regen.commons"
+
+  # Entity types to publish to KOI
+  publish_types:
+    - methodology
+    - credit_class
+    - project
+    - pattern
+    - organization
+
+  # KOI topics to subscribe to
+  subscribe_topics:
+    - "regen:methodologies"
+    - "regen:credit-classes"
+    - "discourse:forum.regen.network"
+
+  # Automatic SDG tagging
+  auto_sdg_tagging: true

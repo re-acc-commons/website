@@ -1,0 +1,467 @@
+# Activity Index Template
+# Events, grants, initiatives tracking
+
+name: Activity Index
+description: |
+  Track civic activities, events, grants, and initiatives.
+  Based on the OpenCivics Activity Index Bot schema.
+
+version: "1.0"
+author: OPAL / Open Civics
+
+use_cases:
+  - Civic activity tracking
+  - Grant and funding opportunities
+  - Event and gathering management
+  - Initiative coordination
+  - Community resource mapping
+
+schema:
+  resource_types:
+    - id: grant
+      name: Grant
+      plural: Grants
+      description: Funding opportunities and awards
+      directory: grants/
+      icon: "💰"
+      keywords: [grant, funding, award, fellowship, scholarship]
+      fields:
+        - name: title
+          type: string
+          required: true
+        - name: funder
+          type: string
+        - name: amount
+          type: string
+        - name: deadline
+          type: date
+        - name: url
+          type: url
+        - name: eligibility
+          type: text
+        - name: focus_areas
+          type: list
+        - name: status
+          type: enum
+          options: [open, closed, upcoming, ongoing]
+
+    - id: initiative
+      name: Initiative
+      plural: Initiatives
+      description: Ongoing programs and campaigns
+      directory: initiatives/
+      icon: "🚀"
+      keywords: [initiative, program, campaign, project, effort]
+      fields:
+        - name: title
+          type: string
+          required: true
+        - name: organizer
+          type: reference
+          to: alliance
+        - name: description
+          type: text
+        - name: start_date
+          type: date
+        - name: status
+          type: enum
+          options: [planning, active, paused, completed]
+        - name: focus_areas
+          type: list
+        - name: url
+          type: url
+
+    - id: alliance
+      name: Alliance
+      plural: Alliances
+      description: Networks and coalitions
+      directory: alliances/
+      icon: "🤝"
+      keywords: [alliance, coalition, network, consortium, collective]
+      fields:
+        - name: name
+          type: string
+          required: true
+        - name: type
+          type: enum
+          options: [network, coalition, consortium, working_group, collective]
+        - name: members
+          type: list
+        - name: focus
+          type: text
+        - name: website
+          type: url
+
+    - id: course
+      name: Course
+      plural: Courses
+      description: Learning opportunities
+      directory: courses/
+      icon: "📚"
+      keywords: [course, workshop, training, webinar, program]
+      fields:
+        - name: title
+          type: string
+          required: true
+        - name: provider
+          type: string
+        - name: format
+          type: enum
+          options: [online, in_person, hybrid, self_paced]
+        - name: start_date
+          type: date
+        - name: duration
+          type: string
+        - name: cost
+          type: string
+        - name: url
+          type: url
+        - name: topics
+          type: list
+
+    - id: gathering
+      name: Gathering
+      plural: Gatherings
+      description: Events and conferences
+      directory: gatherings/
+      icon: "📅"
+      keywords: [event, conference, summit, meetup, gathering, workshop]
+      fields:
+        - name: title
+          type: string
+          required: true
+        - name: type
+          type: enum
+          options: [conference, summit, workshop, meetup, webinar, hackathon, retreat]
+        - name: date
+          type: date
+        - name: end_date
+          type: date
+        - name: location
+          type: string
+        - name: organizer
+          type: string
+        - name: url
+          type: url
+        - name: cost
+          type: string
+        - name: topics
+          type: list
+
+    - id: map
+      name: Map
+      plural: Maps
+      description: Geographic and conceptual mappings
+      directory: maps/
+      icon: "🗺️"
+      keywords: [map, directory, database, index, registry]
+      fields:
+        - name: title
+          type: string
+          required: true
+        - name: type
+          type: enum
+          options: [geographic, conceptual, directory, registry]
+        - name: scope
+          type: string
+        - name: url
+          type: url
+        - name: maintainer
+          type: string
+
+    - id: resource
+      name: Resource
+      plural: Resources
+      description: Tools, guides, and materials
+      directory: resources/
+      icon: "🔧"
+      keywords: [resource, tool, guide, toolkit, template]
+      fields:
+        - name: title
+          type: string
+          required: true
+        - name: type
+          type: enum
+          options: [tool, guide, toolkit, template, report, database]
+        - name: creator
+          type: string
+        - name: url
+          type: url
+        - name: topics
+          type: list
+
+    - id: update
+      name: Member Update
+      plural: Updates
+      description: News from network members
+      directory: updates/
+      icon: "📢"
+      keywords: [update, news, announcement, post]
+      fields:
+        - name: title
+          type: string
+          required: true
+        - name: source
+          type: reference
+          to: alliance
+        - name: date
+          type: date
+        - name: summary
+          type: text
+        - name: url
+          type: url
+
+  dimensions:
+    - id: focus_area
+      name: Focus Area
+      values:
+        - id: governance
+          name: Governance
+        - id: economics
+          name: Economics
+        - id: environment
+          name: Environment
+        - id: technology
+          name: Technology
+        - id: community
+          name: Community
+        - id: education
+          name: Education
+        - id: health
+          name: Health
+        - id: justice
+          name: Justice
+        - id: culture
+          name: Culture
+
+    - id: region
+      name: Region
+      values:
+        - id: global
+          name: Global
+        - id: north_america
+          name: North America
+        - id: europe
+          name: Europe
+        - id: asia
+          name: Asia
+        - id: africa
+          name: Africa
+        - id: south_america
+          name: South America
+        - id: oceania
+          name: Oceania
+
+    - id: status
+      name: Status
+      values:
+        - id: upcoming
+          name: Upcoming
+        - id: active
+          name: Active
+        - id: ongoing
+          name: Ongoing
+        - id: completed
+          name: Completed
+        - id: archived
+          name: Archived
+
+  relationships:
+    - id: organized_by
+      name: Organized By
+      inverse: organizes
+      description: Who runs this activity
+
+    - id: funded_by
+      name: Funded By
+      inverse: funds
+      description: Funding relationship
+
+    - id: part_of
+      name: Part Of
+      inverse: includes
+      description: Activity belongs to initiative
+
+    - id: related_to
+      name: Related To
+      bidirectional: true
+
+directories:
+  - grants/
+  - initiatives/
+  - alliances/
+  - courses/
+  - gatherings/
+  - maps/
+  - resources/
+  - updates/
+  - _inbox/
+  - _staging/
+  - _index/
+
+templates:
+  grant: |
+    ---
+    title: "{{title}}"
+    funder: ""
+    amount: ""
+    deadline: null
+    url: null
+    status: open
+    focus_areas: []
+    region: global
+    created: {{date}}
+    ---
+
+    # {{title}}
+
+    ## Overview
+
+
+
+    ## Eligibility
+
+
+
+    ## Amount
+
+    -
+
+    ## Deadline
+
+    -
+
+    ## How to Apply
+
+    1.
+
+    ## Links
+
+    - [Application]()
+
+  gathering: |
+    ---
+    title: "{{title}}"
+    type: conference
+    date: null
+    end_date: null
+    location: ""
+    organizer: ""
+    url: null
+    cost: ""
+    topics: []
+    status: upcoming
+    created: {{date}}
+    ---
+
+    # {{title}}
+
+    ## Overview
+
+
+
+    ## Details
+
+    - **Date**:
+    - **Location**:
+    - **Cost**:
+
+    ## Topics
+
+    -
+
+    ## Registration
+
+    -
+
+  initiative: |
+    ---
+    title: "{{title}}"
+    organizer: null
+    description: ""
+    start_date: null
+    status: active
+    focus_areas: []
+    url: null
+    created: {{date}}
+    ---
+
+    # {{title}}
+
+    ## Description
+
+
+
+    ## Goals
+
+    -
+
+    ## How to Get Involved
+
+    -
+
+    ## Updates
+
+    -
+
+  course: |
+    ---
+    title: "{{title}}"
+    provider: ""
+    format: online
+    start_date: null
+    duration: ""
+    cost: ""
+    url: null
+    topics: []
+    created: {{date}}
+    ---
+
+    # {{title}}
+
+    ## Overview
+
+
+
+    ## Details
+
+    - **Provider**:
+    - **Format**:
+    - **Duration**:
+    - **Cost**:
+
+    ## Topics
+
+    -
+
+    ## Registration
+
+    -
+
+sources:
+  telegram:
+    enabled: true
+    routing:
+      default: _inbox/links/
+    classification:
+      keywords:
+        grant: [grant, funding, fellowship, award, rfp]
+        gathering: [conference, summit, event, workshop, meetup]
+        course: [course, training, workshop, webinar, program]
+        initiative: [initiative, campaign, project, program]
+
+  rss:
+    enabled: true
+    feeds: []
+
+processing:
+  extract_entities: true
+  create_backlinks: true
+  detect_dates: true
+  confidence_threshold: 0.7
+
+  activity_index:
+    auto_classify_type: true
+    extract_deadlines: true
+    detect_focus_areas: true
+    track_status: true

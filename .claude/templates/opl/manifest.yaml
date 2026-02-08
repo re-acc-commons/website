@@ -1,0 +1,515 @@
+# Open Protocol Library Template
+# Civic patterns, protocols, playbooks
+
+name: Open Protocol Library
+description: |
+  A knowledge commons for civic innovation patterns and protocols.
+  Based on the Open Civics framework for democratic governance.
+
+version: "1.0"
+author: OPAL / Open Civics
+
+use_cases:
+  - Civic innovation commons
+  - Democratic governance patterns
+  - Community organizing resources
+  - Social change protocols
+  - Collective action playbooks
+
+schema:
+  resource_types:
+    - id: pattern
+      name: Pattern
+      plural: Patterns
+      description: Reusable solutions to civic challenges
+      directory: patterns/
+      icon: "🔷"
+      keywords: [pattern, approach, method, practice, solution]
+      fields:
+        - name: name
+          type: string
+          required: true
+        - name: aliases
+          type: list
+        - name: summary
+          type: text
+        - name: problem
+          type: text
+          description: What challenge does this address?
+        - name: solution
+          type: text
+          description: How does this pattern work?
+        - name: sectors
+          type: list
+          dimension: civic_sector
+        - name: scales
+          type: list
+          dimension: civic_scale
+        - name: related_patterns
+          type: references
+          to: pattern
+        - name: implemented_by
+          type: references
+          to: protocol
+
+    - id: protocol
+      name: Protocol
+      plural: Protocols
+      description: Step-by-step procedures for implementing patterns
+      directory: protocols/
+      icon: "📋"
+      keywords: [protocol, procedure, process, method, steps]
+      fields:
+        - name: name
+          type: string
+          required: true
+        - name: implements
+          type: references
+          to: pattern
+        - name: steps
+          type: list
+        - name: requirements
+          type: list
+        - name: duration
+          type: string
+        - name: participants
+          type: string
+        - name: sectors
+          type: list
+          dimension: civic_sector
+        - name: scales
+          type: list
+          dimension: civic_scale
+
+    - id: playbook
+      name: Playbook
+      plural: Playbooks
+      description: Comprehensive guides combining patterns and protocols
+      directory: playbooks/
+      icon: "📖"
+      keywords: [playbook, guide, handbook, manual]
+      fields:
+        - name: name
+          type: string
+          required: true
+        - name: purpose
+          type: text
+        - name: patterns
+          type: references
+          to: pattern
+        - name: protocols
+          type: references
+          to: protocol
+        - name: sectors
+          type: list
+          dimension: civic_sector
+        - name: scales
+          type: list
+          dimension: civic_scale
+
+    - id: primitive
+      name: Primitive
+      plural: Primitives
+      description: Fundamental building blocks
+      directory: primitives/
+      icon: "⚛️"
+      keywords: [primitive, building block, foundation, element]
+      fields:
+        - name: name
+          type: string
+          required: true
+        - name: definition
+          type: text
+        - name: used_in
+          type: references
+          to: pattern
+
+    - id: artifact
+      name: Artifact
+      plural: Artifacts
+      description: Documents, templates, and resources
+      directory: artifacts/
+      icon: "📄"
+      keywords: [artifact, document, template, resource, tool]
+      fields:
+        - name: name
+          type: string
+          required: true
+        - name: type
+          type: enum
+          options: [template, document, tool, guide, example]
+        - name: for_protocols
+          type: references
+          to: protocol
+
+    - id: person
+      name: Person
+      plural: People
+      description: Practitioners, theorists, and contributors
+      directory: people/
+      icon: "👤"
+      keywords: [person, practitioner, theorist, contributor]
+      fields:
+        - name: name
+          type: string
+          required: true
+        - name: role
+          type: string
+        - name: organization
+          type: reference
+          to: organization
+        - name: expertise
+          type: list
+
+    - id: organization
+      name: Organization
+      plural: Organizations
+      description: Groups practicing civic innovation
+      directory: organizations/
+      icon: "🏛️"
+      keywords: [organization, group, collective, institution]
+      fields:
+        - name: name
+          type: string
+          required: true
+        - name: type
+          type: enum
+          options: [nonprofit, cooperative, government, network, community, other]
+        - name: location
+          type: string
+        - name: website
+          type: url
+        - name: practices
+          type: references
+          to: pattern
+
+    - id: activity
+      name: Activity
+      plural: Activities
+      description: Events, programs, and initiatives
+      directory: activities/
+      icon: "📅"
+      keywords: [activity, event, program, initiative, campaign]
+      fields:
+        - name: name
+          type: string
+          required: true
+        - name: type
+          type: enum
+          options: [event, program, campaign, initiative, gathering]
+        - name: date
+          type: date
+        - name: organizer
+          type: reference
+          to: organization
+        - name: patterns_used
+          type: references
+          to: pattern
+
+  dimensions:
+    - id: civic_sector
+      name: Civic Sector
+      values:
+        - id: governance
+          name: Governance & Political Systems
+        - id: economic
+          name: Economic & Resource Sharing Systems
+        - id: education
+          name: Education & Knowledge Systems
+        - id: health
+          name: Health & Wellbeing Systems
+        - id: environment
+          name: Environmental Sustainability
+        - id: infrastructure
+          name: Infrastructure & Built Environment
+        - id: justice
+          name: Justice & Conflict Resolution
+        - id: culture
+          name: Culture & Arts Systems
+        - id: civic
+          name: Civic Engagement & Participation
+        - id: communication
+          name: Communication & Media Systems
+        - id: food
+          name: Food & Agriculture Systems
+        - id: housing
+          name: Housing & Shelter Systems
+        - id: social
+          name: Social Services & Safety Nets
+
+    - id: civic_scale
+      name: Civic Scale
+      values:
+        - id: household
+          name: Household
+        - id: neighborhood
+          name: Neighborhood
+        - id: municipal
+          name: Municipal
+        - id: bioregional
+          name: Bioregional
+        - id: national
+          name: National
+        - id: international
+          name: International
+        - id: planetary
+          name: Planetary
+
+    - id: maturity
+      name: Maturity
+      values:
+        - id: emerging
+          name: Emerging
+          description: New, being developed
+        - id: proven
+          name: Proven
+          description: Tested and validated
+        - id: established
+          name: Established
+          description: Widely adopted
+        - id: legacy
+          name: Legacy
+          description: Being superseded
+
+  relationships:
+    - id: implements
+      name: Implements
+      inverse: implemented_by
+      description: Protocol implements pattern
+
+    - id: extends
+      name: Extends
+      inverse: extended_by
+      description: Builds upon another pattern
+
+    - id: related_to
+      name: Related To
+      bidirectional: true
+
+    - id: practiced_by
+      name: Practiced By
+      inverse: practices
+      description: Organization uses pattern
+
+    - id: contributed_by
+      name: Contributed By
+      inverse: contributed
+      description: Person created/documented
+
+    - id: part_of
+      name: Part Of
+      inverse: contains
+
+directories:
+  - patterns/
+  - protocols/
+  - playbooks/
+  - primitives/
+  - artifacts/
+  - people/
+  - organizations/
+  - activities/
+  - _inbox/
+  - _staging/
+  - _index/
+  - _federation/
+
+templates:
+  pattern: |
+    ---
+    name: "{{title}}"
+    aliases: []
+    sectors: []
+    scales: []
+    maturity: emerging
+    related_patterns: []
+    implemented_by: []
+    created: {{date}}
+    ---
+
+    # {{title}}
+
+    ## Summary
+
+
+
+    ## Problem
+
+    What civic challenge does this pattern address?
+
+    ## Context
+
+    When and where is this pattern applicable?
+
+    ## Solution
+
+    How does this pattern work?
+
+    ## Forces
+
+    What tensions does this pattern balance?
+
+    ## Consequences
+
+    What are the results of applying this pattern?
+
+    ## Examples
+
+    -
+
+    ## Related Patterns
+
+    - [[]]
+
+    ## Protocols
+
+    - [[]]
+
+    ## Sources
+
+    -
+
+  protocol: |
+    ---
+    name: "{{title}}"
+    implements: []
+    sectors: []
+    scales: []
+    duration: ""
+    participants: ""
+    created: {{date}}
+    ---
+
+    # {{title}}
+
+    ## Purpose
+
+
+
+    ## Implements
+
+    - [[pattern]]
+
+    ## Requirements
+
+    ### Participants
+
+    -
+
+    ### Materials
+
+    -
+
+    ### Time
+
+    -
+
+    ## Steps
+
+    ### 1. Preparation
+
+
+
+    ### 2. Process
+
+
+
+    ### 3. Conclusion
+
+
+
+    ## Variations
+
+    -
+
+    ## Tips
+
+    -
+
+    ## Sources
+
+    -
+
+  playbook: |
+    ---
+    name: "{{title}}"
+    purpose: ""
+    patterns: []
+    protocols: []
+    sectors: []
+    scales: []
+    created: {{date}}
+    ---
+
+    # {{title}}
+
+    ## Purpose
+
+
+
+    ## Audience
+
+    Who is this playbook for?
+
+    ## Overview
+
+
+
+    ## Patterns
+
+    - [[]]
+
+    ## Protocols
+
+    - [[]]
+
+    ## Getting Started
+
+    1.
+
+    ## Deep Dives
+
+    -
+
+    ## Resources
+
+    -
+
+sources:
+  filesystem:
+    enabled: true
+    watch:
+      - path: ~/Downloads/*.pdf
+        type: artifact
+
+  telegram:
+    enabled: true
+    routing:
+      default: _inbox/links/
+
+processing:
+  extract_entities: true
+  create_backlinks: true
+  detect_patterns: true
+  confidence_threshold: 0.7
+
+  opl:
+    validate_taxonomy: true
+    suggest_sectors: true
+    suggest_scales: true
+    detect_relationships: true
+
+federation:
+  enabled: true
+  publish:
+    include:
+      - patterns/*
+      - protocols/*
+      - playbooks/*
+    license: CC-BY-SA-4.0
+
+governance:
+  pr_moderation:
+    required_approvals: 3
+    voting_period_hours: 72
+    auto_merge_on_approval: true

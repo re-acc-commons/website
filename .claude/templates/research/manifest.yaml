@@ -1,0 +1,310 @@
+# Research Library Template
+# Academic work, papers, citations
+
+name: Research Library
+description: |
+  A system for managing academic research, papers, and literature.
+  Track sources, citations, and develop ideas from reading.
+
+version: "1.0"
+author: OPAL
+
+use_cases:
+  - Academic research
+  - Literature review
+  - Thesis/dissertation writing
+  - Citation management
+  - Research note-taking
+
+schema:
+  resource_types:
+    - id: paper
+      name: Paper
+      plural: Papers
+      description: Academic papers, articles, preprints
+      directory: papers/
+      icon: "📄"
+      keywords: [paper, article, study, research, publication]
+      fields:
+        - name: title
+          type: string
+          required: true
+        - name: authors
+          type: references
+          to: author
+        - name: year
+          type: number
+        - name: venue
+          type: string
+          description: Journal, conference, or preprint server
+        - name: doi
+          type: string
+        - name: url
+          type: url
+        - name: abstract
+          type: text
+        - name: status
+          type: enum
+          options: [to_read, reading, read, archived]
+        - name: rating
+          type: number
+          min: 1
+          max: 5
+
+    - id: author
+      name: Author
+      plural: Authors
+      description: Researchers and scholars
+      directory: authors/
+      icon: "👤"
+      keywords: [author, researcher, scholar, scientist]
+      fields:
+        - name: name
+          type: string
+          required: true
+        - name: affiliation
+          type: string
+        - name: fields
+          type: list
+        - name: website
+          type: url
+        - name: orcid
+          type: string
+
+    - id: concept
+      name: Concept
+      plural: Concepts
+      description: Theoretical concepts and frameworks
+      directory: concepts/
+      icon: "💡"
+      keywords: [concept, theory, framework, idea]
+      fields:
+        - name: title
+          type: string
+          required: true
+        - name: definition
+          type: text
+        - name: key_papers
+          type: references
+          to: paper
+
+    - id: note
+      name: Research Note
+      plural: Notes
+      description: Your thoughts and analysis
+      directory: notes/
+      icon: "📝"
+      keywords: [note, thought, analysis, observation]
+      fields:
+        - name: title
+          type: string
+          required: true
+        - name: paper
+          type: reference
+          to: paper
+        - name: type
+          type: enum
+          options: [summary, critique, idea, question, connection]
+
+    - id: project
+      name: Research Project
+      plural: Projects
+      description: Research projects and writing efforts
+      directory: projects/
+      icon: "🎯"
+      keywords: [project, thesis, dissertation, study]
+      fields:
+        - name: title
+          type: string
+          required: true
+        - name: status
+          type: enum
+          options: [planning, active, writing, submitted, published]
+        - name: deadline
+          type: date
+        - name: key_papers
+          type: references
+          to: paper
+
+  dimensions:
+    - id: reading_status
+      name: Reading Status
+      values:
+        - id: to_read
+          name: To Read
+        - id: reading
+          name: Reading
+        - id: read
+          name: Read
+        - id: reference
+          name: Reference Only
+
+    - id: relevance
+      name: Relevance
+      values:
+        - id: core
+          name: Core
+          description: Essential to your research
+        - id: important
+          name: Important
+          description: Significant contribution
+        - id: peripheral
+          name: Peripheral
+          description: Tangentially related
+        - id: background
+          name: Background
+          description: General context
+
+  relationships:
+    - id: cites
+      name: Cites
+      inverse: cited_by
+      description: Citation relationship
+
+    - id: extends
+      name: Extends
+      inverse: extended_by
+      description: Builds upon previous work
+
+    - id: contradicts
+      name: Contradicts
+      bidirectional: true
+      description: Conflicting findings or views
+
+    - id: related_to
+      name: Related To
+      bidirectional: true
+
+    - id: authored_by
+      name: Authored By
+      inverse: authored
+
+directories:
+  - papers/
+  - authors/
+  - concepts/
+  - notes/
+  - projects/
+  - _inbox/
+  - _staging/
+  - _index/
+
+templates:
+  paper: |
+    ---
+    title: "{{title}}"
+    authors: []
+    year: null
+    venue: ""
+    doi: ""
+    url: null
+    status: to_read
+    rating: null
+    relevance: important
+    created: {{date}}
+    ---
+
+    # {{title}}
+
+    ## Citation
+
+    > Authors. (Year). Title. *Venue*.
+
+    ## Abstract
+
+
+
+    ## Key Contributions
+
+    -
+
+    ## Methodology
+
+
+
+    ## Key Findings
+
+    -
+
+    ## Relevance to My Research
+
+
+
+    ## Questions & Critiques
+
+    -
+
+    ## Notes
+
+    - [[]]
+
+  note: |
+    ---
+    title: "{{title}}"
+    paper: null
+    type: idea
+    created: {{date}}
+    ---
+
+    # {{title}}
+
+    ## Context
+
+    From reading: [[]]
+
+    ## The Idea
+
+
+
+    ## Implications
+
+
+
+    ## Connections
+
+    - [[]]
+
+  concept: |
+    ---
+    title: "{{title}}"
+    created: {{date}}
+    ---
+
+    # {{title}}
+
+    ## Definition
+
+
+
+    ## Key Papers
+
+    - [[]]
+
+    ## Related Concepts
+
+    - [[]]
+
+    ## My Understanding
+
+
+
+sources:
+  filesystem:
+    enabled: true
+    watch:
+      - path: ~/Downloads/*.pdf
+        type: paper
+      - path: ~/Zotero/storage/**/*.pdf
+        type: paper
+
+processing:
+  extract_entities: true
+  create_backlinks: true
+  detect_citations: true
+  confidence_threshold: 0.7
+
+  research:
+    auto_extract_references: true
+    detect_authors: true
+    parse_abstracts: true
+    build_citation_graph: true

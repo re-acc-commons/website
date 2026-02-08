@@ -219,6 +219,12 @@ strong {
     gap: var(--space-sm);
 }
 
+.nav-logo-icon {
+    width: 28px;
+    height: 28px;
+    image-rendering: pixelated;
+}
+
 .logo-symbol {
     color: var(--moss);
     font-size: 1.5rem;
@@ -994,6 +1000,16 @@ strong {
     font-family: var(--font-mono);
     font-size: 1.25rem;
     font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+}
+
+.footer-logo-icon {
+    width: 36px;
+    height: 36px;
+    image-rendering: pixelated;
 }
 
 .footer-brand .logo-symbol {

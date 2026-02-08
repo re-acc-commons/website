@@ -1,0 +1,80 @@
+# Minimal Template
+# A blank slate with just the essentials
+
+name: Minimal
+description: |
+  The simplest starting point. Just notes and basic organization.
+  Perfect for users who want to define everything themselves.
+
+version: "1.0"
+author: OPAL
+
+# What this template is good for
+use_cases:
+  - Starting from scratch
+  - Learning OPAL basics
+  - Highly custom setups
+
+# Schema definition
+schema:
+  resource_types:
+    - id: note
+      name: Note
+      plural: Notes
+      description: Any piece of content
+      directory: notes/
+      icon: "📝"
+      fields:
+        - name: title
+          type: string
+          required: true
+        - name: tags
+          type: list
+          required: false
+        - name: created
+          type: date
+          auto: true
+
+  dimensions:
+    - id: status
+      name: Status
+      values:
+        - id: draft
+          name: Draft
+        - id: published
+          name: Published
+        - id: archived
+          name: Archived
+
+  relationships:
+    - id: relates_to
+      name: Relates To
+      bidirectional: true
+
+# Directory structure to create
+directories:
+  - notes/
+  - _inbox/
+  - _staging/
+  - _index/
+
+# Templates for each resource type
+templates:
+  note: |
+    ---
+    title: "{{title}}"
+    created: {{date}}
+    status: draft
+    tags: []
+    ---
+
+    # {{title}}
+
+# Default sources (none for minimal)
+sources: {}
+
+# Processing hints
+processing:
+  extract_entities: true
+  create_backlinks: true
+  confidence_threshold: 0.6
