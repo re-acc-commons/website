@@ -17,7 +17,7 @@ class PixelGarden {
         this.grid = [];
         this.nextGrid = [];
         this.frameCount = 0;
-        this.updateInterval = 20; // Slower updates for organic feel
+        this.updateInterval = 12; // Balanced update speed
         this.time = 0;
 
         // Color palette - matrix greens + earth tones
@@ -64,18 +64,18 @@ class PixelGarden {
         }
 
         // Dense initial seeding for swarm effect
-        const density = 0.18;
+        const density = 0.28;
         for (let y = 0; y < this.rows; y++) {
             for (let x = 0; x < this.cols; x++) {
                 if (Math.random() < density) {
                     // Weighted towards greens for Matrix feel
-                    const types = ['moss', 'moss', 'matrix', 'matrix', 'matrix', 'glow', 'amber', 'soil'];
+                    const types = ['moss', 'moss', 'matrix', 'matrix', 'matrix', 'glow', 'glow', 'amber', 'soil'];
                     const type = types[Math.floor(Math.random() * types.length)];
                     const maxIndex = this.colors[type].length;
                     this.grid[y][x] = {
                         type,
                         colorIndex: Math.floor(Math.random() * maxIndex),
-                        energy: 0.5 + Math.random() * 0.5,
+                        energy: 0.7 + Math.random() * 0.3,
                         phase: Math.random() * Math.PI * 2
                     };
                 }
@@ -83,13 +83,13 @@ class PixelGarden {
         }
 
         // Scatter bright glow accents
-        for (let i = 0; i < 30; i++) {
+        for (let i = 0; i < 60; i++) {
             const x = Math.floor(Math.random() * this.cols);
             const y = Math.floor(Math.random() * this.rows);
             this.grid[y][x] = {
                 type: 'glow',
                 colorIndex: Math.floor(Math.random() * 3),
-                energy: 0.8,
+                energy: 0.95,
                 phase: Math.random() * Math.PI * 2
             };
         }
@@ -179,18 +179,18 @@ class PixelGarden {
                 } else {
                     // Dead cell - birth conditions
                     // More lenient birth rules for continuous activity
-                    if (count >= 2 && count <= 4 && avgEnergy > 0.4 && Math.random() < 0.3) {
+                    if (count >= 2 && count <= 5 && avgEnergy > 0.3 && Math.random() < 0.4) {
                         const type = this.getNeighborType(x, y);
                         // Small chance to mutate type
-                        const mutationTypes = ['moss', 'matrix', 'matrix', 'glow', 'amber', 'soil'];
-                        const actualType = Math.random() < 0.1
+                        const mutationTypes = ['moss', 'matrix', 'matrix', 'glow', 'glow', 'amber', 'soil'];
+                        const actualType = Math.random() < 0.15
                             ? mutationTypes[Math.floor(Math.random() * mutationTypes.length)]
                             : type;
                         const maxIndex = this.colors[actualType].length;
                         this.nextGrid[y][x] = {
                             type: actualType,
                             colorIndex: Math.floor(Math.random() * maxIndex),
-                            energy: 0.3 + Math.random() * 0.3,
+                            energy: 0.5 + Math.random() * 0.4,
                             phase: Math.random() * Math.PI * 2
                         };
                     } else {
@@ -203,19 +203,19 @@ class PixelGarden {
         // Swap grids
         [this.grid, this.nextGrid] = [this.nextGrid, this.grid];
 
-        // Continuous spawning to maintain swarm density
-        const spawnCount = Math.floor(Math.random() * 6) + 3;
+        // Continuous spawning to maintain swarm density - life tending to life
+        const spawnCount = Math.floor(Math.random() * 10) + 5;
         for (let i = 0; i < spawnCount; i++) {
             const x = Math.floor(Math.random() * this.cols);
             const y = Math.floor(Math.random() * this.rows);
             if (!this.grid[y][x]) {
-                const types = ['moss', 'matrix', 'matrix', 'matrix', 'glow', 'amber', 'soil'];
+                const types = ['moss', 'moss', 'matrix', 'matrix', 'matrix', 'glow', 'glow', 'amber', 'soil'];
                 const type = types[Math.floor(Math.random() * types.length)];
                 const maxIndex = this.colors[type].length;
                 this.grid[y][x] = {
                     type,
                     colorIndex: Math.floor(Math.random() * maxIndex),
-                    energy: 0.4 + Math.random() * 0.4,
+                    energy: 0.6 + Math.random() * 0.4,
                     phase: Math.random() * Math.PI * 2
                 };
             }
@@ -225,16 +225,16 @@ class PixelGarden {
     draw() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-        // Global slow pulse - very subtle breathing
-        const globalPulse = 0.9 + 0.1 * Math.sin(this.time * 0.2);
+        // Global slow pulse - soft breathing of the swarm
+        const globalPulse = 0.8 + 0.2 * Math.sin(this.time * 0.3);
 
         for (let y = 0; y < this.rows; y++) {
             for (let x = 0; x < this.cols; x++) {
                 const cell = this.grid[y][x];
                 if (!cell || cell.energy <= 0) continue;
 
-                // Individual cell pulse offset by phase - slower, more organic
-                const cellPulse = 0.75 + 0.25 * Math.sin(this.time * 0.4 + cell.phase);
+                // Individual cell pulse offset by phase - organic variation
+                const cellPulse = 0.6 + 0.4 * Math.sin(this.time * 0.5 + cell.phase);
                 const alpha = cell.energy * cellPulse * globalPulse;
 
                 const colorArray = this.colors[cell.type];
@@ -244,15 +244,15 @@ class PixelGarden {
                     this.ctx.fillStyle = colorArray;
                 }
 
-                // Glow types are brighter, earth tones subtler
+                // More visible - glow types brightest, earth tones visible but softer
                 if (cell.type === 'glow') {
-                    this.ctx.globalAlpha = alpha * 0.55;
+                    this.ctx.globalAlpha = alpha * 0.75;
                 } else if (cell.type === 'matrix') {
-                    this.ctx.globalAlpha = alpha * 0.45;
+                    this.ctx.globalAlpha = alpha * 0.65;
                 } else if (cell.type === 'moss') {
-                    this.ctx.globalAlpha = alpha * 0.4;
+                    this.ctx.globalAlpha = alpha * 0.55;
                 } else {
-                    this.ctx.globalAlpha = alpha * 0.35;
+                    this.ctx.globalAlpha = alpha * 0.5;
                 }
 
                 this.ctx.fillRect(
