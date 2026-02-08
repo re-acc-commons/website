@@ -4,7 +4,7 @@
  */
 
 // ═══════════════════════════════════════════════════════════
-// PIXEL GARDEN — Generative background animation
+// PIXEL GARDEN — Conway's Game of Life inspired animation
 // ═══════════════════════════════════════════════════════════
 
 class PixelGarden {
@@ -13,11 +13,13 @@ class PixelGarden {
         if (!this.canvas) return;
 
         this.ctx = this.canvas.getContext('2d');
-        this.pixels = [];
         this.cellSize = 8;
-        this.time = 0;
+        this.grid = [];
+        this.nextGrid = [];
+        this.frameCount = 0;
+        this.updateInterval = 8; // Update every N frames for subtle movement
 
-        // Color palette - earth tones
+        // Color palette - earth tones with fade states
         this.colors = {
             moss: ['#2d5a3d', '#4a7c59', '#6b9b7a'],
             amber: ['#b8864a', '#d4a574', '#e8c9a0'],
@@ -33,7 +35,6 @@ class PixelGarden {
 
     init() {
         this.resize();
-        this.generatePixels();
     }
 
     resize() {
@@ -42,80 +43,216 @@ class PixelGarden {
         this.canvas.height = rect.height;
         this.cols = Math.ceil(this.canvas.width / this.cellSize);
         this.rows = Math.ceil(this.canvas.height / this.cellSize);
-        this.generatePixels();
+        this.initGrid();
     }
 
-    generatePixels() {
-        this.pixels = [];
+    initGrid() {
+        this.grid = [];
+        this.nextGrid = [];
 
-        // Create organic clusters of pixels
-        const clusterCount = Math.floor((this.cols * this.rows) / 80);
+        // Initialize empty grids
+        for (let y = 0; y < this.rows; y++) {
+            this.grid[y] = [];
+            this.nextGrid[y] = [];
+            for (let x = 0; x < this.cols; x++) {
+                this.grid[y][x] = null;
+                this.nextGrid[y][x] = null;
+            }
+        }
+
+        // Seed with organic clusters
+        const clusterCount = Math.floor((this.cols * this.rows) / 100);
 
         for (let i = 0; i < clusterCount; i++) {
-            const centerX = Math.random() * this.cols;
-            const centerY = Math.random() * this.rows;
-            const size = 3 + Math.random() * 8;
-            const type = Math.random() < 0.7 ? 'moss' : (Math.random() < 0.5 ? 'amber' : 'soil');
+            const centerX = Math.floor(Math.random() * this.cols);
+            const centerY = Math.floor(Math.random() * this.rows);
+            const size = 2 + Math.random() * 5;
+            const types = ['moss', 'moss', 'moss', 'amber', 'soil'];
+            const type = types[Math.floor(Math.random() * types.length)];
 
-            // Create cluster
-            for (let j = 0; j < size * 3; j++) {
-                const angle = Math.random() * Math.PI * 2;
-                const distance = Math.random() * size;
-                const x = Math.floor(centerX + Math.cos(angle) * distance);
-                const y = Math.floor(centerY + Math.sin(angle) * distance);
+            // Create cluster with common life patterns
+            this.seedPattern(centerX, centerY, type);
+        }
 
-                if (x >= 0 && x < this.cols && y >= 0 && y < this.rows) {
-                    this.pixels.push({
-                        x,
-                        y,
-                        type,
-                        colorIndex: Math.floor(Math.random() * 3),
-                        phase: Math.random() * Math.PI * 2,
-                        speed: 0.5 + Math.random() * 1.5
-                    });
+        // Add sparse terminal accent cells
+        for (let i = 0; i < 15; i++) {
+            const x = Math.floor(Math.random() * this.cols);
+            const y = Math.floor(Math.random() * this.rows);
+            this.grid[y][x] = {
+                type: 'terminal',
+                age: 0,
+                fade: 1
+            };
+        }
+    }
+
+    seedPattern(cx, cy, type) {
+        // Various small patterns that create interesting life dynamics
+        const patterns = [
+            // Glider
+            [[0,0], [1,0], [2,0], [2,1], [1,2]],
+            // Small exploder
+            [[0,0], [0,1], [0,2], [1,0], [1,2], [2,1]],
+            // Block cluster
+            [[0,0], [1,0], [0,1], [1,1], [3,0], [3,1]],
+            // Line
+            [[0,0], [1,0], [2,0], [3,0]],
+            // L-shape
+            [[0,0], [0,1], [0,2], [1,2], [2,2]],
+            // Random scatter
+            [[0,0], [2,1], [1,2], [3,0], [2,3]]
+        ];
+
+        const pattern = patterns[Math.floor(Math.random() * patterns.length)];
+        const colorIndex = Math.floor(Math.random() * 3);
+
+        for (const [dx, dy] of pattern) {
+            const x = cx + dx;
+            const y = cy + dy;
+            if (x >= 0 && x < this.cols && y >= 0 && y < this.rows) {
+                this.grid[y][x] = {
+                    type,
+                    colorIndex,
+                    age: 0,
+                    fade: 1
+                };
+            }
+        }
+    }
+
+    countNeighbors(x, y) {
+        let count = 0;
+        for (let dy = -1; dy <= 1; dy++) {
+            for (let dx = -1; dx <= 1; dx++) {
+                if (dx === 0 && dy === 0) continue;
+                const nx = (x + dx + this.cols) % this.cols;
+                const ny = (y + dy + this.rows) % this.rows;
+                if (this.grid[ny][nx] && this.grid[ny][nx].fade > 0.3) {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+
+    getNeighborType(x, y) {
+        // Get the most common type among neighbors
+        const types = {};
+        for (let dy = -1; dy <= 1; dy++) {
+            for (let dx = -1; dx <= 1; dx++) {
+                if (dx === 0 && dy === 0) continue;
+                const nx = (x + dx + this.cols) % this.cols;
+                const ny = (y + dy + this.rows) % this.rows;
+                const cell = this.grid[ny][nx];
+                if (cell && cell.fade > 0.3) {
+                    types[cell.type] = (types[cell.type] || 0) + 1;
+                }
+            }
+        }
+        let maxType = 'moss';
+        let maxCount = 0;
+        for (const [type, count] of Object.entries(types)) {
+            if (count > maxCount) {
+                maxCount = count;
+                maxType = type;
+            }
+        }
+        return maxType;
+    }
+
+    updateGrid() {
+        // Copy current grid to next
+        for (let y = 0; y < this.rows; y++) {
+            for (let x = 0; x < this.cols; x++) {
+                const cell = this.grid[y][x];
+                const neighbors = this.countNeighbors(x, y);
+
+                if (cell && cell.fade > 0.1) {
+                    // Living cell - modified rules for organic feel
+                    // Survive with 2-3 neighbors, slowly fade otherwise
+                    if (neighbors >= 2 && neighbors <= 3) {
+                        this.nextGrid[y][x] = {
+                            ...cell,
+                            age: cell.age + 1,
+                            fade: Math.min(1, cell.fade + 0.1)
+                        };
+                    } else if (neighbors < 2 || neighbors > 4) {
+                        // Underpopulation or overcrowding - fade out
+                        this.nextGrid[y][x] = {
+                            ...cell,
+                            fade: cell.fade - 0.15
+                        };
+                        if (this.nextGrid[y][x].fade <= 0) {
+                            this.nextGrid[y][x] = null;
+                        }
+                    } else {
+                        this.nextGrid[y][x] = { ...cell };
+                    }
+                } else {
+                    // Dead cell - birth with exactly 3 neighbors
+                    if (neighbors === 3) {
+                        const type = this.getNeighborType(x, y);
+                        this.nextGrid[y][x] = {
+                            type,
+                            colorIndex: Math.floor(Math.random() * 3),
+                            age: 0,
+                            fade: 0.3
+                        };
+                    } else {
+                        this.nextGrid[y][x] = null;
+                    }
                 }
             }
         }
 
-        // Add sparse terminal-green accent pixels
-        for (let i = 0; i < 20; i++) {
-            this.pixels.push({
-                x: Math.floor(Math.random() * this.cols),
-                y: Math.floor(Math.random() * this.rows),
-                type: 'terminal',
-                phase: Math.random() * Math.PI * 2,
-                speed: 2 + Math.random() * 2
-            });
+        // Swap grids
+        [this.grid, this.nextGrid] = [this.nextGrid, this.grid];
+
+        // Occasionally seed new life to prevent extinction
+        if (Math.random() < 0.02) {
+            const x = Math.floor(Math.random() * this.cols);
+            const y = Math.floor(Math.random() * this.rows);
+            const types = ['moss', 'moss', 'amber', 'soil'];
+            this.seedPattern(x, y, types[Math.floor(Math.random() * types.length)]);
         }
     }
 
     draw() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-        for (const pixel of this.pixels) {
-            const brightness = 0.3 + 0.7 * ((Math.sin(this.time * pixel.speed + pixel.phase) + 1) / 2);
+        for (let y = 0; y < this.rows; y++) {
+            for (let x = 0; x < this.cols; x++) {
+                const cell = this.grid[y][x];
+                if (!cell || cell.fade <= 0) continue;
 
-            if (pixel.type === 'terminal') {
-                this.ctx.fillStyle = this.colors.terminal;
-                this.ctx.globalAlpha = brightness * 0.8;
-            } else {
-                this.ctx.fillStyle = this.colors[pixel.type][pixel.colorIndex];
-                this.ctx.globalAlpha = brightness * 0.6;
+                if (cell.type === 'terminal') {
+                    this.ctx.fillStyle = this.colors.terminal;
+                    this.ctx.globalAlpha = cell.fade * 0.7;
+                } else {
+                    this.ctx.fillStyle = this.colors[cell.type][cell.colorIndex || 0];
+                    this.ctx.globalAlpha = cell.fade * 0.5;
+                }
+
+                this.ctx.fillRect(
+                    x * this.cellSize,
+                    y * this.cellSize,
+                    this.cellSize - 1,
+                    this.cellSize - 1
+                );
             }
-
-            this.ctx.fillRect(
-                pixel.x * this.cellSize,
-                pixel.y * this.cellSize,
-                this.cellSize - 1,
-                this.cellSize - 1
-            );
         }
 
         this.ctx.globalAlpha = 1;
     }
 
     animate() {
-        this.time += 0.01;
+        this.frameCount++;
+
+        // Update grid at slower interval for subtle movement
+        if (this.frameCount % this.updateInterval === 0) {
+            this.updateGrid();
+        }
+
         this.draw();
         requestAnimationFrame(() => this.animate());
     }
